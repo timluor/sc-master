@@ -2,832 +2,1239 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>SC Master</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  :root {
-    --red: #E8312A;
-    --red-dark: #B52420;
-    --red-glow: rgba(232,49,42,0.25);
-    --bg: #0A0A0A;
-    --bg2: #141414;
-    --bg3: #1C1C1C;
-    --bg4: #242424;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.14);
-    --text: #F0F0F0;
-    --text2: #A0A0A0;
-    --text3: #606060;
-    --green: #3ECF8E;
-    --amber: #F5A623;
-    --font-en: 'Rajdhani', sans-serif;
-    --font-cn: 'Noto Sans SC', sans-serif;
-  }
-  html, body { height: 100%; background: var(--bg); color: var(--text); }
-  body { font-family: var(--font-cn); min-height: 100vh; }
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --red:#E8312A;--red2:#B52420;--red-a:rgba(232,49,42,0.18);
+  --bg:#0A0A0C;--bg2:#131316;--bg3:#1C1C20;--bg4:#242428;--bg5:#2C2C32;
+  --b1:rgba(255,255,255,0.07);--b2:rgba(255,255,255,0.13);--b3:rgba(255,255,255,0.22);
+  --t1:#F2F2F4;--t2:#9A9AA8;--t3:#55555F;
+  --green:#2DD98F;--amber:#F5A623;--blue:#4A8FE8;
+  --r8:8px;--r12:12px;--r16:16px;--r20:20px;
+  --font:'Rajdhani',sans-serif;--cjk:'Noto Sans SC',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--t1);overscroll-behavior:none}
+body{font-family:var(--cjk);-webkit-font-smoothing:antialiased}
+.app{max-width:390px;margin:0 auto;min-height:100vh;position:relative;overflow-x:hidden}
 
-  .app { max-width: 390px; margin: 0 auto; min-height: 100vh; background: var(--bg); position: relative; overflow: hidden; }
+/* ── BOTTOM NAV ── */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:390px;z-index:200;
+  background:rgba(10,10,12,0.92);backdrop-filter:blur(24px);
+  border-top:0.5px solid var(--b1);display:flex;padding:8px 0 env(safe-area-inset-bottom,16px)}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px 0;transition:opacity .15s}
+.ni svg{width:22px;height:22px;stroke:var(--t3);transition:stroke .2s}
+.ni span{font-size:10px;color:var(--t3);font-family:var(--cjk);transition:color .2s}
+.ni.on svg{stroke:var(--red)}
+.ni.on span{color:var(--red)}
 
-  /* NAV */
-  .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 390px; background: rgba(14,14,14,0.95); backdrop-filter: blur(20px); border-top: 0.5px solid var(--border); display: flex; z-index: 100; padding: 8px 0 20px; }
-  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 6px 0; }
-  .nav-icon { width: 22px; height: 22px; opacity: 0.4; }
-  .nav-icon.active { opacity: 1; filter: drop-shadow(0 0 4px var(--red)); }
-  .nav-icon svg { width: 22px; height: 22px; }
-  .nav-label { font-size: 10px; color: var(--text3); font-family: var(--font-cn); }
-  .nav-item.active .nav-label { color: var(--red); }
-  .nav-item.active .nav-icon svg path, .nav-item.active .nav-icon svg rect, .nav-item.active .nav-icon svg circle { stroke: var(--red); }
+/* ── SCREENS ── */
+.scr{display:none;padding-bottom:80px;animation:si .22s ease}
+.scr.on{display:block}
+@keyframes si{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-  /* SCREENS */
-  .screen { display: none; padding: 0 0 90px; animation: fadeIn 0.2s ease; }
-  .screen.active { display: block; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+/* ── TYPOGRAPHY ── */
+.ph{padding:52px 18px 10px;display:flex;align-items:center;gap:12px}
+.ph-back{width:34px;height:34px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.ph-back svg{width:18px;height:18px;stroke:var(--t1)}
+.ph-right{margin-left:auto}
+.pg-title{font-size:17px;font-weight:700;color:var(--t1)}
+.pg-sub{font-size:11px;color:var(--t3);margin-top:2px}
 
-  /* HEADER */
-  .header { padding: 56px 20px 16px; display: flex; justify-content: space-between; align-items: flex-start; }
-  .header-title { font-family: var(--font-en); font-size: 28px; font-weight: 700; letter-spacing: 1px; color: var(--text); }
-  .header-sub { font-size: 11px; color: var(--text3); font-family: var(--font-en); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
-  .header-add { width: 32px; height: 32px; border: 0.5px solid var(--border2); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  .header-add svg { width: 16px; height: 16px; stroke: var(--text2); }
+/* ── HOME ── */
+.home-head{padding:54px 18px 14px;display:flex;justify-content:space-between;align-items:flex-end}
+.brand-en{font-family:var(--font);font-size:26px;font-weight:700;letter-spacing:.5px;color:var(--t1)}
+.brand-sub{font-size:10px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;font-family:var(--font)}
+.plus-btn{width:32px;height:32px;border-radius:50%;background:var(--bg3);border:0.5px solid var(--b2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.plus-btn svg{width:15px;height:15px;stroke:var(--t2)}
 
-  .page-header { padding: 52px 20px 12px; display: flex; align-items: center; gap: 14px; }
-  .back-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-  .back-btn svg { width: 20px; height: 20px; stroke: var(--text); }
-  .page-title { font-size: 18px; font-weight: 700; color: var(--text); }
-  .page-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+/* CAR CARD */
+.car-wrap{margin:0 14px 16px;background:var(--bg2);border:0.5px solid var(--b2);border-radius:var(--r20);overflow:hidden;position:relative}
+.car-top{padding:14px 16px 0;display:flex;justify-content:space-between;align-items:flex-start}
+.car-name{font-family:var(--font);font-size:16px;font-weight:600;color:var(--t1)}
+.car-batt{display:flex;align-items:center;gap:6px}
+.batt-pct{font-family:var(--font);font-size:14px;font-weight:700;color:var(--green)}
+.batt-box{width:26px;height:12px;border:1.5px solid var(--green);border-radius:2px;display:flex;align-items:center;padding:1.5px;position:relative}
+.batt-box::after{content:'';position:absolute;right:-4px;top:50%;transform:translateY(-50%);width:2.5px;height:5px;background:var(--green);border-radius:0 1px 1px 0}
+.batt-fill{flex:1;background:var(--green);border-radius:1px}
+.car-meta{padding:4px 16px 0;display:flex;align-items:center;gap:8px}
+.dot-live{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
+.meta-txt{font-size:11px;color:var(--green)}
+.meta-ver{font-size:11px;color:var(--t3)}
 
-  /* CAR CARD */
-  .car-card { margin: 0 16px 20px; background: linear-gradient(135deg, #181818 0%, #111111 100%); border: 0.5px solid var(--border2); border-radius: 16px; padding: 16px; overflow: hidden; position: relative; }
-  .car-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(232,49,42,0.06) 0%, transparent 70%); pointer-events: none; }
-  .car-info { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
-  .car-name { font-family: var(--font-en); font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; }
-  .car-battery { display: flex; align-items: center; gap: 6px; }
-  .battery-pct { font-family: var(--font-en); font-size: 14px; font-weight: 600; color: var(--green); }
-  .battery-bar { width: 28px; height: 12px; border: 1.5px solid var(--green); border-radius: 2px; position: relative; display: flex; align-items: center; padding: 2px; }
-  .battery-bar::after { content: ''; position: absolute; right: -5px; top: 50%; transform: translateY(-50%); width: 3px; height: 5px; background: var(--green); border-radius: 0 1px 1px 0; }
-  .battery-fill { height: 100%; width: 100%; background: var(--green); border-radius: 1px; }
-  .car-status { display: flex; align-items: center; gap: 5px; margin-bottom: 12px; }
-  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
-  .status-text { font-size: 12px; color: var(--green); }
-  .module-ver { font-size: 11px; color: var(--text3); }
-  .car-img-wrap { height: 90px; display: flex; align-items: center; justify-content: center; margin: 4px 0; }
-  .car-svg { width: 220px; height: 80px; }
-  .tesla-badge { font-family: var(--font-en); font-size: 11px; letter-spacing: 4px; color: var(--text3); text-align: center; text-transform: uppercase; margin-top: 4px; }
+/* TESLA MODEL Y SVG */
+.car-svg-wrap{height:108px;display:flex;align-items:center;justify-content:center;position:relative;padding:0 10px}
+.car-brand{text-align:center;font-family:var(--font);font-size:10px;letter-spacing:5px;color:var(--t3);padding:0 0 10px;text-transform:uppercase}
 
-  /* FEATURE GRID */
-  .feature-grid { margin: 0 16px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .feat-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 14px; padding: 16px; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s; }
-  .feat-card:active { transform: scale(0.97); }
-  .feat-card.purple { border-color: rgba(140,80,220,0.3); }
-  .feat-card.green { border-color: rgba(62,207,142,0.3); }
-  .feat-card.amber { border-color: rgba(245,166,35,0.3); }
-  .feat-card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
-  .feat-card-sub { font-size: 11px; color: var(--text3); line-height: 1.4; }
-  .feat-icon { width: 28px; height: 28px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
-  .feat-icon svg { width: 18px; height: 18px; }
+/* REALTIME ROW */
+.rt-row{display:flex;padding:12px 16px;border-top:0.5px solid var(--b1);gap:8px}
+.rt-item{flex:1;text-align:center}
+.rt-val{font-family:var(--font);font-size:18px;font-weight:700;color:var(--t1)}
+.rt-val.green{color:var(--green)}
+.rt-val.red{color:var(--red)}
+.rt-lbl{font-size:10px;color:var(--t3);margin-top:1px}
+.rt-div{width:0.5px;background:var(--b1)}
 
-  /* DEVICE STATUS */
-  .section-header { padding: 0 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-  .section-title { font-size: 14px; font-weight: 700; color: var(--text); }
-  .section-more { font-size: 12px; color: var(--text3); display: flex; align-items: center; gap: 2px; }
-  .status-grid { margin: 0 16px; display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 20px; }
-  .stat-item { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 12px; padding: 12px 8px; text-align: center; }
-  .stat-icon { width: 20px; height: 20px; margin: 0 auto 6px; }
-  .stat-icon svg { width: 20px; height: 20px; stroke: var(--text3); }
-  .stat-val { font-size: 13px; font-family: var(--font-en); font-weight: 600; color: var(--text); }
-  .stat-val.green { color: var(--green); }
-  .stat-val.normal { color: var(--red); }
-  .stat-label { font-size: 10px; color: var(--text3); margin-top: 2px; }
+/* GEAR BADGE */
+.gear-badge{display:inline-block;font-family:var(--font);font-size:20px;font-weight:700;
+  width:32px;height:32px;line-height:32px;text-align:center;border-radius:8px;background:var(--bg4);color:var(--t1)}
+.gear-badge.D{background:rgba(74,143,232,0.2);color:var(--blue)}
+.gear-badge.R{background:rgba(232,49,42,0.2);color:var(--red)}
+.gear-badge.P{background:rgba(45,217,143,0.18);color:var(--green)}
+.gear-badge.N{background:var(--bg4);color:var(--t2)}
 
-  /* SHORTCUT SCREEN */
-  .steering-wrap { margin: 0 16px 16px; background: var(--bg2); border-radius: 16px; overflow: hidden; position: relative; }
-  .steering-img { width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; background: #101010; position: relative; }
-  .sw-svg { width: 240px; height: 180px; }
-  .tab-bar { display: flex; background: var(--bg3); border-bottom: 0.5px solid var(--border); }
-  .tab { flex: 1; padding: 12px 0; text-align: center; font-size: 13px; color: var(--text3); cursor: pointer; position: relative; }
-  .tab.active { color: var(--text); }
-  .tab.active::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 2px; background: var(--red); border-radius: 1px; }
+/* ALERT ROW */
+.alert-row{display:flex;gap:8px;padding:0 14px 6px}
+.alert-pill{display:flex;align-items:center;gap:5px;padding:5px 10px;border-radius:20px;font-size:11px;background:var(--bg3);border:0.5px solid var(--b1);color:var(--t3)}
+.alert-pill.warn{background:rgba(245,166,35,0.1);border-color:rgba(245,166,35,0.3);color:var(--amber)}
+.alert-pill svg{width:12px;height:12px}
 
-  .shortcut-list { padding: 0 16px; }
-  .shortcut-item { display: flex; align-items: center; padding: 14px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; }
-  .shortcut-item:last-child { border-bottom: none; }
-  .sc-icon-box { width: 36px; height: 36px; background: var(--bg3); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 14px; flex-shrink: 0; }
-  .sc-icon-box svg { width: 18px; height: 18px; stroke: var(--text2); }
-  .sc-name { font-size: 14px; color: var(--text); flex: 1; }
-  .sc-action { font-size: 13px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
-  .sc-action svg { width: 14px; height: 14px; stroke: var(--text3); }
+/* QUICK GRID */
+.qgrid{margin:0 14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.qcard{background:var(--bg2);border:0.5px solid var(--b1);border-radius:var(--r16);padding:14px;cursor:pointer;transition:transform .15s,border-color .15s;position:relative;overflow:hidden}
+.qcard:active{transform:scale(0.96)}
+.qcard-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.qcard-icon svg{width:17px;height:17px}
+.qcard-title{font-size:14px;font-weight:700;color:var(--t1);line-height:1.2}
+.qcard-sub{font-size:11px;color:var(--t3);margin-top:3px;line-height:1.3}
+.qcard-badge{position:absolute;top:10px;right:10px;font-size:10px;padding:2px 7px;border-radius:10px;font-family:var(--font);font-weight:600}
 
-  .save-btn { margin: 16px; background: var(--red); border: none; border-radius: 12px; width: calc(100% - 32px); padding: 16px; font-size: 16px; font-weight: 700; color: #fff; font-family: var(--font-cn); cursor: pointer; letter-spacing: 1px; transition: background 0.2s; }
-  .save-btn:active { background: var(--red-dark); transform: scale(0.98); }
+/* DEVICE STATUS */
+.sec-hd{padding:0 18px 10px;display:flex;justify-content:space-between;align-items:center}
+.sec-title{font-size:13px;font-weight:700;color:var(--t1)}
+.sec-more{font-size:11px;color:var(--t3);display:flex;align-items:center;gap:2px}
+.stat-row{margin:0 14px 16px;background:var(--bg2);border:0.5px solid var(--b1);border-radius:var(--r16);display:flex;padding:12px 0}
+.stat-item{flex:1;text-align:center;position:relative}
+.stat-item+.stat-item::before{content:'';position:absolute;left:0;top:10%;height:80%;width:0.5px;background:var(--b1)}
+.stat-icon{margin:0 auto 5px;width:20px;height:20px}
+.stat-icon svg{width:20px;height:20px;stroke:var(--t3)}
+.stat-v{font-family:var(--font);font-size:14px;font-weight:600;color:var(--t1)}
+.stat-v.g{color:var(--green)}
+.stat-v.r{color:var(--red)}
+.stat-l{font-size:10px;color:var(--t3);margin-top:1px}
 
-  /* OTA SCREEN */
-  .ota-hero { margin: 0 16px 20px; background: var(--bg2); border-radius: 16px; padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 200px; position: relative; overflow: hidden; }
-  .ota-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 80%, rgba(232,49,42,0.07) 0%, transparent 60%); }
-  .progress-ring-wrap { position: relative; width: 140px; height: 140px; }
-  .progress-ring { transform: rotate(-90deg); }
-  .ring-bg { stroke: var(--bg4); fill: none; stroke-width: 8; }
-  .ring-fill { stroke: var(--red); fill: none; stroke-width: 8; stroke-linecap: round; stroke-dasharray: 376; stroke-dashoffset: 94; transition: stroke-dashoffset 0.5s; }
-  .ring-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-  .ring-pct { font-family: var(--font-en); font-size: 32px; font-weight: 700; color: var(--text); }
-  .ring-label { font-size: 12px; color: var(--text3); margin-top: 2px; }
+/* ── SHORTCUT SCREEN ── */
+.sw-wrap{margin:0 14px 14px;border-radius:var(--r16);overflow:hidden;background:var(--bg2);border:0.5px solid var(--b1)}
+.sw-canvas{height:190px;display:flex;align-items:center;justify-content:center;background:#0C0C10}
+.tab-row{display:flex;background:var(--bg3);border-bottom:0.5px solid var(--b1)}
+.tab-btn{flex:1;padding:11px 0;text-align:center;font-size:13px;color:var(--t3);cursor:pointer;position:relative;transition:color .2s}
+.tab-btn.on{color:var(--t1)}
+.tab-btn.on::after{content:'';position:absolute;bottom:0;left:25%;right:25%;height:2px;background:var(--red);border-radius:1px}
 
-  .ota-version { text-align: center; margin-bottom: 16px; }
-  .ota-ver-text { font-size: 13px; color: var(--text2); }
-  .ota-ver-num { font-family: var(--font-en); font-size: 15px; font-weight: 600; color: var(--text); }
+.sc-list{padding:0 14px}
+.sc-item{display:flex;align-items:center;padding:13px 0;border-bottom:0.5px solid var(--b1);cursor:pointer;transition:background .15s}
+.sc-item:last-child{border:none}
+.sc-item:active{background:var(--bg3)}
+.sc-ico{width:36px;height:36px;background:var(--bg3);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-right:12px}
+.sc-ico svg{width:17px;height:17px;stroke:var(--t2)}
+.sc-name{font-size:14px;color:var(--t1);flex:1}
+.sc-val{font-size:12px;color:var(--t3);display:flex;align-items:center;gap:4px}
+.sc-val svg{width:13px;height:13px;stroke:var(--t3)}
 
-  .ota-steps { margin: 0 16px; }
-  .ota-step { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
-  .ota-step:last-child { border-bottom: none; }
-  .step-icon { width: 20px; height: 20px; flex-shrink: 0; }
-  .step-dot { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .step-dot.done { background: var(--green); border-color: var(--green); }
-  .step-dot.active { border-color: var(--red); }
-  .step-dot.done svg { width: 11px; height: 11px; stroke: #fff; stroke-width: 2.5; }
-  .step-dot.active-ring { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--red); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .step-name { font-size: 14px; color: var(--text2); }
-  .step-name.active { color: var(--text); }
-  .ota-note { margin: 16px; padding: 12px 14px; background: rgba(232,49,42,0.07); border: 0.5px solid rgba(232,49,42,0.2); border-radius: 10px; font-size: 12px; color: var(--text3); line-height: 1.6; }
+.save-btn{margin:14px;width:calc(100% - 28px);background:var(--red);border:none;border-radius:var(--r12);padding:15px;font-size:15px;font-weight:700;color:#fff;font-family:var(--cjk);cursor:pointer;letter-spacing:1px;transition:background .2s,transform .1s}
+.save-btn:active{background:var(--red2);transform:scale(0.98)}
 
-  /* AMBIENT LIGHT */
-  .ambient-hero { margin: 0 16px 16px; height: 170px; border-radius: 16px; overflow: hidden; background: #080810; position: relative; display: flex; align-items: flex-end; }
-  .ambient-glow { position: absolute; inset: 0; }
-  .ambient-overlay { position: relative; width: 100%; padding: 14px; }
-  .al-tabs { display: flex; gap: 16px; margin: 0 16px 14px; }
-  .al-tab { font-size: 13px; color: var(--text3); cursor: pointer; padding-bottom: 6px; position: relative; }
-  .al-tab.active { color: var(--text); }
-  .al-tab.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--red); border-radius: 1px; }
-  .color-swatches { display: flex; gap: 10px; padding: 0 16px 14px; overflow-x: auto; scrollbar-width: none; }
-  .color-swatches::-webkit-scrollbar { display: none; }
-  .swatch { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
-  .swatch.selected { border-color: white; box-shadow: 0 0 0 3px rgba(255,255,255,0.15); }
-  .color-picker-wrap { margin: 0 16px 14px; border-radius: 12px; overflow: hidden; position: relative; height: 100px; }
-  .color-canvas { width: 100%; height: 100%; border-radius: 12px; }
-  .picker-handle { position: absolute; width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 1px rgba(0,0,0,0.3); cursor: pointer; transform: translate(-50%,-50%); left: 60%; top: 75%; }
-  .brightness-row { display: flex; align-items: center; gap: 12px; padding: 0 16px; margin-bottom: 8px; }
-  .brightness-label { font-size: 13px; color: var(--text3); width: 28px; }
-  .brightness-bar { flex: 1; height: 4px; background: var(--bg3); border-radius: 2px; position: relative; }
-  .brightness-fill { height: 100%; width: 80%; background: linear-gradient(90deg, #333, #fff); border-radius: 2px; }
-  .brightness-handle { position: absolute; right: 20%; top: 50%; transform: translate(50%,-50%); width: 16px; height: 16px; background: white; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.4); cursor: pointer; }
-  .brightness-pct { font-family: var(--font-en); font-size: 13px; color: var(--text3); width: 36px; text-align: right; }
+/* ── CONTROL SCREEN ── */
+.ctrl-section{margin:0 14px 14px;background:var(--bg2);border:0.5px solid var(--b1);border-radius:var(--r16);overflow:hidden}
+.ctrl-hd{padding:12px 14px;border-bottom:0.5px solid var(--b1);font-size:12px;font-weight:700;color:var(--t2);letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.ctrl-hd svg{width:14px;height:14px;stroke:var(--t3)}
+.ctrl-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.ctrl-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 8px;cursor:pointer;transition:background .15s;position:relative;gap:7px}
+.ctrl-btn:active{background:var(--bg4)}
+.ctrl-btn+.ctrl-btn{border-left:0.5px solid var(--b1)}
+.ctrl-btn:nth-child(3),.ctrl-btn:nth-child(4){border-top:0.5px solid var(--b1)}
+.ctrl-btn:nth-child(5),.ctrl-btn:nth-child(6){border-top:0.5px solid var(--b1);border-left:0}
+.ctrl-btn:nth-child(6){border-left:0.5px solid var(--b1)}
+.ctrl-btn:nth-child(7),.ctrl-btn:nth-child(8){border-top:0.5px solid var(--b1);border-left:0}
+.ctrl-btn:nth-child(8){border-left:0.5px solid var(--b1)}
+.cb-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.cb-icon svg{width:20px;height:20px}
+.cb-label{font-size:12px;color:var(--t2);text-align:center;line-height:1.3}
+.cb-state{position:absolute;top:8px;right:8px;width:7px;height:7px;border-radius:50%}
 
-  /* SCENE MODE */
-  .scene-list { padding: 0 16px; }
-  .scene-card { border-radius: 14px; overflow: hidden; margin-bottom: 10px; position: relative; cursor: pointer; }
-  .scene-bg { width: 100%; height: 86px; object-fit: cover; }
-  .scene-bg-div { width: 100%; height: 86px; }
-  .scene-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,0.65) 0%, transparent 60%); display: flex; align-items: center; padding: 0 14px; }
-  .scene-info { flex: 1; }
-  .scene-name { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
-  .scene-desc { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 2px; }
-  .scene-badge { position: absolute; top: 10px; right: 10px; background: var(--red); border-radius: 6px; padding: 3px 8px; font-size: 10px; color: #fff; font-weight: 600; }
-  .apply-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(6px); border: 0.5px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 7px 16px; font-size: 13px; color: #fff; font-family: var(--font-cn); font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
-  .apply-btn:active { background: rgba(255,255,255,0.25); }
+/* ENERGY RECOVERY */
+.energy-wrap{padding:14px}
+.energy-label{font-size:12px;color:var(--t2);margin-bottom:10px;display:flex;justify-content:space-between}
+.energy-steps{display:flex;gap:5px}
+.estep{flex:1;height:6px;border-radius:3px;background:var(--bg4);cursor:pointer;transition:background .2s}
+.estep.on{background:var(--green)}
 
-  /* SETTINGS */
-  .device-card { margin: 0 16px 16px; background: var(--bg2); border: 0.5px solid var(--border); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px; }
-  .device-avatar { width: 48px; height: 48px; background: var(--bg3); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-  .device-avatar svg { width: 26px; height: 26px; stroke: var(--text2); }
-  .device-name { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
-  .device-id { font-size: 11px; color: var(--text3); margin-top: 3px; }
-  .device-ver { font-size: 11px; color: var(--text3); margin-top: 2px; }
-  .update-btn { background: rgba(232,49,42,0.12); border: 0.5px solid rgba(232,49,42,0.3); border-radius: 8px; padding: 5px 10px; font-size: 11px; color: var(--red); font-family: var(--font-cn); cursor: pointer; white-space: nowrap; }
-  .edit-icon { width: 16px; height: 16px; stroke: var(--text3); }
+/* AC CONTROL */
+.ac-wrap{padding:14px}
+.ac-label{font-size:12px;color:var(--t2);margin-bottom:10px;display:flex;justify-content:space-between}
+.ac-btns{display:flex;gap:8px}
+.ac-btn{flex:1;padding:10px 0;text-align:center;border-radius:var(--r8);background:var(--bg3);border:0.5px solid var(--b1);font-size:13px;color:var(--t2);cursor:pointer;transition:all .15s}
+.ac-btn:active{background:var(--bg4)}
+.ac-btn.primary{background:var(--red-a);border-color:var(--red);color:var(--red)}
 
-  .settings-section { margin: 0 16px 20px; background: var(--bg2); border: 0.5px solid var(--border); border-radius: 16px; overflow: hidden; }
-  .settings-item { display: flex; align-items: center; gap: 12px; padding: 15px 16px; border-bottom: 0.5px solid var(--border); cursor: pointer; transition: background 0.15s; }
-  .settings-item:last-child { border-bottom: none; }
-  .settings-item:active { background: var(--bg3); }
-  .si-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .si-icon svg { width: 16px; height: 16px; }
-  .si-icon.blue { background: rgba(30,100,220,0.15); }
-  .si-icon.blue svg { stroke: #4A90E2; }
-  .si-icon.red { background: rgba(232,49,42,0.12); }
-  .si-icon.red svg { stroke: var(--red); }
-  .si-icon.green { background: rgba(62,207,142,0.12); }
-  .si-icon.green svg { stroke: var(--green); }
-  .si-icon.orange { background: rgba(245,166,35,0.12); }
-  .si-icon.orange svg { stroke: var(--amber); }
-  .si-icon.gray { background: var(--bg3); }
-  .si-icon.gray svg { stroke: var(--text2); }
-  .si-icon.purple { background: rgba(140,80,220,0.12); }
-  .si-icon.purple svg { stroke: #9B59B6; }
-  .si-label { flex: 1; font-size: 14px; color: var(--text); }
-  .si-arrow { width: 14px; height: 14px; stroke: var(--text3); }
+/* SEAT CONTROL */
+.seat-wrap{padding:14px}
+.seat-row{display:flex;gap:10px;margin-bottom:8px}
+.seat-side{flex:1}
+.seat-title{font-size:11px;color:var(--t3);text-align:center;margin-bottom:6px}
+.seat-btns{display:grid;grid-template-columns:1fr 1fr;gap:5px}
+.seat-btn{padding:9px 4px;text-align:center;border-radius:var(--r8);background:var(--bg3);border:0.5px solid var(--b1);font-size:11px;color:var(--t2);cursor:pointer;transition:background .15s;line-height:1.3}
+.seat-btn:active{background:var(--bg5)}
 
-  .logout-btn { margin: 0 16px 24px; border: 0.5px solid rgba(232,49,42,0.3); border-radius: 12px; width: calc(100% - 32px); padding: 15px; font-size: 15px; font-weight: 600; color: var(--red); font-family: var(--font-cn); cursor: pointer; background: transparent; letter-spacing: 1px; transition: background 0.2s; }
-  .logout-btn:active { background: rgba(232,49,42,0.08); }
+/* DOOR CONTROL */
+.door-wrap{padding:14px}
+.door-model{width:100%;height:90px;margin-bottom:12px;position:relative}
+.door-btn-row{display:flex;gap:6px}
+.door-btn{flex:1;padding:10px 4px;border-radius:var(--r8);background:var(--bg3);border:0.5px solid var(--b1);text-align:center;font-size:11px;color:var(--t2);cursor:pointer;transition:all .15s;line-height:1.4}
+.door-btn:active{background:var(--bg4)}
+.door-btn.trunk{flex:none;width:100%;margin-top:6px}
+
+/* ── OTA SCREEN ── */
+.ota-hero{margin:0 14px 16px;background:var(--bg2);border:0.5px solid var(--b1);border-radius:var(--r20);padding:28px;display:flex;flex-direction:column;align-items:center;gap:0}
+.ring-outer{position:relative;width:148px;height:148px}
+.ring-svg{transform:rotate(-90deg)}
+.ring-bg{stroke:var(--bg4);fill:none;stroke-width:9}
+.ring-red{stroke:var(--red);fill:none;stroke-width:9;stroke-linecap:round;stroke-dasharray:408;transition:stroke-dashoffset .6s ease}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-family:var(--font);font-size:36px;font-weight:700;color:var(--t1)}
+.ring-lbl{font-size:11px;color:var(--t3);margin-top:1px}
+.ota-ver{font-size:13px;color:var(--t2);margin-top:16px;text-align:center}
+.ota-ver b{font-family:var(--font);font-size:16px;color:var(--t1);font-weight:600}
+
+.ota-steps{margin:0 14px 14px;background:var(--bg2);border:0.5px solid var(--b1);border-radius:var(--r16);overflow:hidden}
+.ota-step{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:0.5px solid var(--b1)}
+.ota-step:last-child{border:none}
+.step-ico{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.step-ico.done{background:var(--green)}
+.step-ico.done svg{width:11px;height:11px;stroke:#000;stroke-width:3}
+.step-ico.act{border:2px solid var(--red)}
+.step-ico.act .pulse{width:9px;height:9px;border-radius:50%;background:var(--red);animation:pulse 1.2s ease-in-out infinite}
+.step-ico.idle{border:1.5px solid var(--b2)}
+.step-name{font-size:13px;color:var(--t2)}
+.step-name.act{color:var(--t1)}
+.step-time{margin-left:auto;font-size:11px;color:var(--t3)}
+.ota-note{margin:0 14px;padding:11px 14px;background:rgba(232,49,42,0.06);border:0.5px solid rgba(232,49,42,0.2);border-radius:var(--r12);font-size:12px;color:var(--t3);line-height:1.7;display:flex;gap:8px;align-items:flex-start}
+.ota-note svg{width:14px;height:14px;stroke:var(--red);flex-shrink:0;margin-top:1px}
+
+/* ── AMBIENT SCREEN ── */
+.amb-preview{margin:0 14px 14px;height:160px;border-radius:var(--r16);overflow:hidden;position:relative}
+.amb-preview svg{width:100%;height:100%}
+.amb-tabs{display:flex;gap:18px;padding:0 18px 12px;border-bottom:0.5px solid var(--b1);margin-bottom:12px}
+.amb-tab{font-size:13px;color:var(--t3);cursor:pointer;padding-bottom:8px;position:relative;transition:color .2s}
+.amb-tab.on{color:var(--t1)}
+.amb-tab.on::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--red);border-radius:1px}
+.swatches{display:flex;gap:9px;padding:0 14px 14px;overflow-x:auto;scrollbar-width:none}
+.swatches::-webkit-scrollbar{display:none}
+.sw-dot{width:30px;height:30px;border-radius:50%;flex-shrink:0;cursor:pointer;transition:transform .15s;border:2px solid transparent}
+.sw-dot.on{border-color:#fff;transform:scale(1.15)}
+.picker-area{margin:0 14px 14px;border-radius:var(--r12);overflow:hidden;height:90px;position:relative;cursor:crosshair}
+.picker-area canvas{width:100%;height:100%;display:block}
+.picker-dot{position:absolute;width:22px;height:22px;border-radius:50%;border:2.5px solid #fff;box-shadow:0 1px 6px rgba(0,0,0,0.5);transform:translate(-50%,-50%);pointer-events:none;left:50%;top:50%}
+.bright-row{display:flex;align-items:center;gap:10px;padding:0 14px 14px}
+.bright-lbl{font-size:12px;color:var(--t3);width:24px}
+.bright-track{flex:1;height:4px;border-radius:2px;position:relative;cursor:pointer;background:linear-gradient(90deg,#111,#fff)}
+.bright-thumb{position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 5px rgba(0,0,0,0.5);transform:translate(-50%,-50%);top:50%;left:80%;pointer-events:none}
+.bright-pct{font-family:var(--font);font-size:13px;color:var(--t3);width:34px;text-align:right}
+
+/* ── SCENE SCREEN ── */
+.scene-wrap{padding:0 14px}
+.scene-card{border-radius:var(--r16);overflow:hidden;margin-bottom:10px;position:relative;cursor:pointer}
+.scene-bg{width:100%;height:88px;position:relative}
+.scene-inner{position:absolute;inset:0;display:flex;align-items:center;padding:0 14px}
+.scene-info{flex:1}
+.scene-name{font-size:16px;font-weight:700;color:#fff;letter-spacing:.3px}
+.scene-desc{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px;line-height:1.4}
+.scene-apply{background:rgba(255,255,255,0.14);backdrop-filter:blur(8px);border:0.5px solid rgba(255,255,255,.3);border-radius:var(--r8);padding:7px 14px;font-size:13px;color:#fff;font-family:var(--cjk);font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.scene-apply:active{background:rgba(255,255,255,0.25)}
+.scene-badge{position:absolute;top:9px;right:9px;background:var(--red);border-radius:6px;padding:3px 7px;font-size:10px;color:#fff;font-weight:700}
+
+/* ── SETTINGS ── */
+.dev-card{margin:0 14px 14px;background:var(--bg2);border:0.5px solid var(--b2);border-radius:var(--r16);padding:14px 16px;display:flex;align-items:center;gap:12px}
+.dev-ava{width:46px;height:46px;background:var(--bg4);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dev-ava svg{width:24px;height:24px;stroke:var(--t2)}
+.dev-name{font-size:14px;font-weight:700;color:var(--t1);display:flex;align-items:center;gap:6px}
+.dev-id{font-size:11px;color:var(--t3);margin-top:2px}
+.dev-ver{font-size:11px;color:var(--t3);margin-top:1px}
+.upd-btn{background:var(--red-a);border:0.5px solid rgba(232,49,42,.4);border-radius:var(--r8);padding:5px 10px;font-size:11px;color:var(--red);font-family:var(--cjk);cursor:pointer;white-space:nowrap}
+.set-list{margin:0 14px 14px;background:var(--bg2);border:0.5px solid var(--b1);border-radius:var(--r16);overflow:hidden}
+.set-item{display:flex;align-items:center;gap:11px;padding:14px 14px;border-bottom:0.5px solid var(--b1);cursor:pointer;transition:background .15s}
+.set-item:last-child{border:none}
+.set-item:active{background:var(--bg3)}
+.si-ico{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.si-ico svg{width:15px;height:15px}
+.si-lbl{flex:1;font-size:14px;color:var(--t1)}
+.si-arr{width:13px;height:13px;stroke:var(--t3)}
+.logout-btn{margin:0 14px 20px;width:calc(100% - 28px);padding:14px;border:0.5px solid rgba(232,49,42,.3);border-radius:var(--r12);background:transparent;font-size:15px;font-weight:600;color:var(--red);font-family:var(--cjk);cursor:pointer;letter-spacing:1px;transition:background .2s}
+.logout-btn:active{background:var(--red-a)}
+
+/* UTILS */
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(1.4)}}
+.divider{height:0.5px;background:var(--b1);margin:0 14px 14px}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- HOME SCREEN -->
-  <div class="screen active" id="screen-home">
-    <div class="header">
-      <div>
-        <div class="header-title">SC Master</div>
-        <div class="header-sub">Smart Steering Control System</div>
-      </div>
-      <div class="header-add">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </div>
+<!-- ═══ HOME ═══ -->
+<div class="scr on" id="s-home">
+  <div class="home-head">
+    <div>
+      <div class="brand-en">SC Master</div>
+      <div class="brand-sub">Smart Steering Control</div>
     </div>
+    <div class="plus-btn"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+  </div>
 
-    <!-- Car Card -->
-    <div class="car-card">
-      <div class="car-info">
+  <!-- Car Card -->
+  <div class="car-wrap">
+    <div class="car-top">
+      <div>
         <div class="car-name">Model Y Performance</div>
-        <div class="car-battery">
-          <span class="battery-pct">100%</span>
-          <div class="battery-bar"><div class="battery-fill"></div></div>
+        <div class="car-meta" style="padding:4px 0 0">
+          <div class="dot-live"></div>
+          <span class="meta-txt">已连接</span>
+          <span class="meta-ver">· SC Module v2.3.8</span>
         </div>
       </div>
-      <div class="car-status">
-        <div class="status-dot"></div>
-        <span class="status-text">已连接</span>
-        <span style="color:var(--text3);font-size:12px;margin-left:10px;">SC Module v2.3.8</span>
-      </div>
-      <div class="car-img-wrap">
-        <svg class="car-svg" viewBox="0 0 220 80" fill="none">
-          <ellipse cx="110" cy="72" rx="95" ry="6" fill="rgba(0,0,0,0.4)"/>
-          <!-- Body -->
-          <path d="M20 55 L30 30 Q50 12 80 10 L140 10 Q170 10 190 30 L200 55 Z" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
-          <!-- Roof -->
-          <path d="M60 30 Q75 12 110 11 Q145 12 162 30" fill="#222" stroke="#2A2A2A" stroke-width="0.5"/>
-          <!-- Windows -->
-          <path d="M68 29 L80 14 Q100 10 115 13 L118 29 Z" fill="#0D1520" opacity="0.9"/>
-          <path d="M120 29 L125 13 Q145 10 160 20 L162 29 Z" fill="#0D1520" opacity="0.9"/>
-          <!-- Window divider -->
-          <line x1="119" y1="13" x2="119" y2="29" stroke="#333" stroke-width="1"/>
-          <!-- Wheels -->
-          <circle cx="58" cy="58" r="14" fill="#111" stroke="#333" stroke-width="1.5"/>
-          <circle cx="58" cy="58" r="8" fill="#1A1A1A" stroke="#444" stroke-width="1"/>
-          <circle cx="58" cy="58" r="3" fill="#555"/>
-          <circle cx="162" cy="58" r="14" fill="#111" stroke="#333" stroke-width="1.5"/>
-          <circle cx="162" cy="58" r="8" fill="#1A1A1A" stroke="#444" stroke-width="1"/>
-          <circle cx="162" cy="58" r="3" fill="#555"/>
-          <!-- Underbody -->
-          <path d="M20 55 L30 60 L75 62 L145 62 L190 60 L200 55" stroke="#2A2A2A" stroke-width="0.5" fill="none"/>
-          <!-- Headlights -->
-          <path d="M192 35 L200 38 L200 48 L194 50" fill="#E8312A" opacity="0.4"/>
-          <path d="M193 35 L200 37" stroke="#E8312A" stroke-width="1.5" opacity="0.8"/>
-          <!-- Taillights -->
-          <path d="M20 38 L27 35 L27 50 L21 48" fill="#E8312A" opacity="0.25"/>
-          <line x1="20" y1="37" x2="28" y2="35" stroke="#E8312A" stroke-width="1" opacity="0.6"/>
-          <!-- Tesla logo -->
-          <text x="110" y="54" text-anchor="middle" font-family="Rajdhani" font-size="8" fill="#555" letter-spacing="4">TESLA</text>
-        </svg>
+      <div class="car-batt">
+        <span class="batt-pct" id="homeBattPct">82%</span>
+        <div class="batt-box"><div class="batt-fill"></div></div>
       </div>
     </div>
 
-    <!-- Feature Grid -->
-    <div class="feature-grid">
-      <div class="feat-card purple" onclick="showScreen('shortcut')">
-        <div class="feat-icon" style="background:rgba(140,80,220,0.15);">
-          <svg viewBox="0 0 24 24" fill="none" stroke="rgba(180,120,255,0.9)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9 9h.01M15 9h.01M9 15h6"/></svg>
-        </div>
-        <div class="feat-card-title">快捷按键</div>
-        <div class="feat-card-sub">自定义按键功能</div>
-      </div>
-      <div class="feat-card green" onclick="showScreen('ota')">
-        <div class="feat-icon" style="background:rgba(62,207,142,0.12);">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-        </div>
-        <div class="feat-card-title">OTA升级</div>
-        <div class="feat-card-sub" style="color:var(--green);opacity:0.8;">当前版本 v2.3.8</div>
-      </div>
-      <div class="feat-card" style="border-color:rgba(232,49,42,0.3);" onclick="showScreen('ambient')">
-        <div class="feat-icon" style="background:rgba(232,49,42,0.1);">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        </div>
-        <div class="feat-card-title">氛围灯控制</div>
-        <div class="feat-card-sub">多种灯效模式</div>
-      </div>
-      <div class="feat-card amber" onclick="showScreen('scene')">
-        <div class="feat-icon" style="background:rgba(245,166,35,0.12);">
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        </div>
-        <div class="feat-card-title">场景模式</div>
-        <div class="feat-card-sub">多场景自动联动</div>
-      </div>
-    </div>
-
-    <!-- Device Status -->
-    <div class="section-header">
-      <span class="section-title">设备状态</span>
-      <span class="section-more">查看全部 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="9 18 15 12 9 6"/></svg></span>
-    </div>
-    <div class="status-grid">
-      <div class="stat-item">
-        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26C17.81 13.47 19 11.38 19 9a7 7 0 0 0-7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg></div>
-        <div class="stat-val green">优秀</div>
-        <div class="stat-label">蓝牙强度</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4"/></svg></div>
-        <div class="stat-val">12.6V</div>
-        <div class="stat-label">模块电压</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></div>
-        <div class="stat-val">36°C</div>
-        <div class="stat-label">温度</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-        <div class="stat-val normal">正常</div>
-        <div class="stat-label">运行状态</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SHORTCUT SCREEN -->
-  <div class="screen" id="screen-shortcut">
-    <div class="page-header">
-      <div class="back-btn" onclick="showScreen('home')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-      </div>
-      <div>
-        <div class="page-title">快捷按键</div>
-        <div class="page-sub">自定义SC方向盘按键功能</div>
-      </div>
-    </div>
-
-    <div class="steering-wrap">
-      <div class="steering-img">
-        <svg class="sw-svg" viewBox="0 0 240 180" fill="none">
-          <!-- Wheel outer ring -->
-          <circle cx="120" cy="95" r="78" stroke="#2A2A2A" stroke-width="14" fill="none"/>
-          <circle cx="120" cy="95" r="78" stroke="#1A1A1A" stroke-width="12" fill="none"/>
-          <!-- Spokes -->
-          <path d="M60 145 L95 100" stroke="#222" stroke-width="10" stroke-linecap="round"/>
-          <path d="M180 145 L145 100" stroke="#222" stroke-width="10" stroke-linecap="round"/>
-          <path d="M120 17 L120 60" stroke="#222" stroke-width="10" stroke-linecap="round"/>
-          <!-- Hub -->
-          <circle cx="120" cy="95" r="38" fill="#1A1A1A" stroke="#2A2A2A" stroke-width="1"/>
-          <!-- Tesla T logo -->
-          <path d="M108 82 L132 82" stroke="#555" stroke-width="2" stroke-linecap="round"/>
-          <line x1="120" y1="82" x2="120" y2="108" stroke="#555" stroke-width="2" stroke-linecap="round"/>
-          <!-- Left button -->
-          <rect x="28" y="62" width="34" height="28" rx="6" fill="#1E1E1E" stroke="#E8312A" stroke-width="1.5"/>
-          <line x1="40" y1="76" x2="52" y2="76" stroke="#E8312A" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="46" y1="70" x2="46" y2="82" stroke="#E8312A" stroke-width="1.5" stroke-linecap="round"/>
-          <!-- Right button -->
-          <rect x="178" y="62" width="34" height="28" rx="6" fill="#1E1E1E" stroke="#E8312A" stroke-width="1.5"/>
-          <circle cx="195" cy="76" r="6" fill="none" stroke="#E8312A" stroke-width="1.5"/>
-          <line x1="190" y1="71" x2="195" y2="76" stroke="#E8312A" stroke-width="1.5" stroke-linecap="round"/>
-          <!-- Scroll wheel indicator left -->
-          <rect x="36" y="108" width="18" height="30" rx="9" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
-          <line x1="45" y1="119" x2="45" y2="127" stroke="#444" stroke-width="1.5" stroke-linecap="round"/>
-          <!-- Scroll wheel indicator right -->
-          <rect x="186" y="108" width="18" height="30" rx="9" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
-          <line x1="195" y1="119" x2="195" y2="127" stroke="#444" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </div>
-      <div class="tab-bar">
-        <div class="tab active">单击</div>
-        <div class="tab">双击</div>
-        <div class="tab">长按</div>
-        <div class="tab">滚轮</div>
-      </div>
-    </div>
-
-    <div class="shortcut-list">
-      <div class="shortcut-item">
-        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
-        <span class="sc-name">左侧按键</span>
-        <div class="sc-action">打开前备箱 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-      <div class="shortcut-item">
-        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M3 12h2M19 12h2M12 3v2M12 19v2"/></svg></div>
-        <span class="sc-name">右侧按键</span>
-        <div class="sc-action">360全景影像 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-      <div class="shortcut-item">
-        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="18 15 12 9 6 15"/></svg></div>
-        <span class="sc-name">滚轮上滑</span>
-        <div class="sc-action">音量+ <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-      <div class="shortcut-item">
-        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="6 9 12 15 18 9"/></svg></div>
-        <span class="sc-name">滚轮下滑</span>
-        <div class="sc-action">音量- <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-      <div class="shortcut-item">
-        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="8"/></svg></div>
-        <span class="sc-name">滚轮按压</span>
-        <div class="sc-action">静音 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-      <div class="shortcut-item">
-        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-        <span class="sc-name">长按滚轮</span>
-        <div class="sc-action">切换驾驶模式 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
-      </div>
-    </div>
-
-    <button class="save-btn">保存配置到设备</button>
-  </div>
-
-  <!-- OTA SCREEN -->
-  <div class="screen" id="screen-ota">
-    <div class="page-header">
-      <div class="back-btn" onclick="showScreen('home')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-      </div>
-      <div>
-        <div class="page-title">OTA升级</div>
-      </div>
-    </div>
-
-    <div class="ota-hero">
-      <div class="progress-ring-wrap">
-        <svg width="140" height="140" class="progress-ring">
-          <circle class="ring-bg" cx="70" cy="70" r="60"/>
-          <circle class="ring-fill" cx="70" cy="70" r="60" id="otaRing"/>
-        </svg>
-        <div class="ring-text">
-          <div class="ring-pct" id="otaPct">75%</div>
-          <div class="ring-label">正在升级...</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="ota-version" style="margin:0 0 16px;padding:0 16px;">
-      <span class="ota-ver-text">正在升级到 </span><span class="ota-ver-num">v2.5.3</span>
-    </div>
-
-    <div class="ota-steps">
-      <div class="ota-step">
-        <div class="step-dot done"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <span class="step-name">准备升级包</span>
-      </div>
-      <div class="ota-step">
-        <div class="step-dot done"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <span class="step-name">验证升级包</span>
-      </div>
-      <div class="ota-step">
-        <div class="step-dot done"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
-        <span class="step-name">传输升级包</span>
-      </div>
-      <div class="ota-step">
-        <div class="step-dot active-ring" style="border-color:var(--red);">
-          <div style="width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1.2s infinite;"></div>
-        </div>
-        <span class="step-name active">写入固件</span>
-      </div>
-      <div class="ota-step">
-        <div class="step-dot"></div>
-        <span class="step-name">重启设备</span>
-      </div>
-    </div>
-    <div class="ota-note">升级过程中请勿断开连接<br>升级预计需要 2 分钟</div>
-    <style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}</style>
-  </div>
-
-  <!-- AMBIENT LIGHT -->
-  <div class="screen" id="screen-ambient">
-    <div class="page-header">
-      <div class="back-btn" onclick="showScreen('home')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-      </div>
-      <div class="page-title">氛围灯控制</div>
-    </div>
-
-    <div class="ambient-hero" id="ambientHero">
-      <svg class="ambient-glow" viewBox="0 0 358 170" preserveAspectRatio="xMidYMid slice">
-        <!-- Dark car interior silhouette with ambient glow -->
+    <!-- Tesla Model Y SVG -->
+    <div class="car-svg-wrap">
+      <svg width="320" height="100" viewBox="0 0 320 100" fill="none">
         <defs>
-          <radialGradient id="glow1" cx="50%" cy="100%" r="60%">
-            <stop offset="0%" stop-color="#E8312A" stop-opacity="0.5"/>
-            <stop offset="100%" stop-color="#E8312A" stop-opacity="0"/>
+          <radialGradient id="bodyShadow" cx="50%" cy="100%" r="50%">
+            <stop offset="0%" stop-color="rgba(232,49,42,0.08)"/>
+            <stop offset="100%" stop-color="transparent"/>
+          </radialGradient>
+          <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2A2A30"/>
+            <stop offset="100%" stop-color="#18181C"/>
+          </linearGradient>
+          <linearGradient id="roofGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#323238"/>
+            <stop offset="100%" stop-color="#1E1E24"/>
+          </linearGradient>
+        </defs>
+        <!-- Ground shadow -->
+        <ellipse cx="160" cy="94" rx="140" ry="6" fill="rgba(0,0,0,0.45)"/>
+        <!-- Body main -->
+        <path d="M22 68 L30 38 Q40 16 72 12 L248 12 Q278 14 294 38 L302 68 Z" fill="url(#bodyGrad)" stroke="#333" stroke-width="0.8"/>
+        <!-- Roof panel -->
+        <path d="M78 36 Q92 13 130 11 L190 11 Q225 12 242 36 Z" fill="url(#roofGrad)" stroke="#2A2A2A" stroke-width="0.5"/>
+        <!-- A-pillar left -->
+        <path d="M78 36 L92 56" stroke="#252528" stroke-width="3" stroke-linecap="round"/>
+        <!-- A-pillar right -->
+        <path d="M242 36 L228 56" stroke="#252528" stroke-width="3" stroke-linecap="round"/>
+        <!-- B-pillar -->
+        <path d="M160 12 L160 56" stroke="#1C1C20" stroke-width="3"/>
+        <!-- Window left -->
+        <path d="M86 35 L100 14 Q118 10 148 11 L155 35 Z" fill="#0C1220" opacity="0.95"/>
+        <!-- Window right -->
+        <path d="M174 35 L168 11 Q200 10 222 20 L234 35 Z" fill="#0C1220" opacity="0.95"/>
+        <!-- Window highlight left -->
+        <path d="M90 30 L102 15 Q115 11 135 12 L138 18 Q122 17 108 22 Z" fill="rgba(100,140,200,0.08)"/>
+        <!-- Door lines -->
+        <line x1="84" y1="42" x2="84" y2="68" stroke="#222" stroke-width="0.7"/>
+        <line x1="160" y1="42" x2="160" y2="68" stroke="#222" stroke-width="0.7"/>
+        <line x1="236" y1="42" x2="236" y2="68" stroke="#222" stroke-width="0.7"/>
+        <!-- Underside -->
+        <path d="M22 68 L28 72 L292 72 L302 68" stroke="#1A1A1E" stroke-width="0.5" fill="none"/>
+        <!-- Front bumper -->
+        <path d="M295 40 L305 52 L305 66 L297 70" fill="#1C1C20" stroke="#2A2A2A" stroke-width="0.5"/>
+        <!-- Rear bumper -->
+        <path d="M25 40 L15 52 L15 66 L23 70" fill="#1C1C20" stroke="#2A2A2A" stroke-width="0.5"/>
+        <!-- Headlight right (DRL) -->
+        <path d="M292 38 L306 45 L306 50 L294 52" fill="none" stroke="#E8312A" stroke-width="1.5" opacity="0.7"/>
+        <line x1="292" y1="38" x2="308" y2="43" stroke="#E8312A" stroke-width="1" opacity="0.5"/>
+        <!-- Taillight left (LED) -->
+        <path d="M22 38 L14 44 L14 52 L22 54" fill="none" stroke="#E8312A" stroke-width="1.5" opacity="0.5"/>
+        <!-- Front frunk line -->
+        <path d="M285 34 Q288 28 298 32" stroke="#2A2A2A" stroke-width="0.8" fill="none"/>
+        <!-- Wheel left front -->
+        <circle cx="78" cy="78" r="18" fill="#111114" stroke="#2E2E34" stroke-width="2"/>
+        <circle cx="78" cy="78" r="11" fill="#18181C" stroke="#3A3A42" stroke-width="1"/>
+        <circle cx="78" cy="78" r="5" fill="#262630"/>
+        <!-- Wheel spokes left -->
+        <line x1="78" y1="67" x2="78" y2="89" stroke="#3A3A44" stroke-width="1.5"/>
+        <line x1="67" y1="78" x2="89" y2="78" stroke="#3A3A44" stroke-width="1.5"/>
+        <line x1="70" y1="70" x2="86" y2="86" stroke="#3A3A44" stroke-width="1"/>
+        <line x1="70" y1="86" x2="86" y2="70" stroke="#3A3A44" stroke-width="1"/>
+        <!-- Wheel right rear -->
+        <circle cx="242" cy="78" r="18" fill="#111114" stroke="#2E2E34" stroke-width="2"/>
+        <circle cx="242" cy="78" r="11" fill="#18181C" stroke="#3A3A42" stroke-width="1"/>
+        <circle cx="242" cy="78" r="5" fill="#262630"/>
+        <line x1="242" y1="67" x2="242" y2="89" stroke="#3A3A44" stroke-width="1.5"/>
+        <line x1="231" y1="78" x2="253" y2="78" stroke="#3A3A44" stroke-width="1.5"/>
+        <line x1="234" y1="70" x2="250" y2="86" stroke="#3A3A44" stroke-width="1"/>
+        <line x1="234" y1="86" x2="250" y2="70" stroke="#3A3A44" stroke-width="1"/>
+        <!-- Body glow -->
+        <rect x="22" y="12" width="280" height="60" rx="6" fill="url(#bodyShadow)" opacity="0.5"/>
+        <!-- Tesla wordmark -->
+        <text x="160" y="65" text-anchor="middle" font-family="Rajdhani" font-size="9" fill="#3A3A44" letter-spacing="6">TESLA</text>
+      </svg>
+    </div>
+
+    <!-- Realtime data row -->
+    <div class="rt-row">
+      <div class="rt-item">
+        <div class="rt-val" id="rtSpeed">0</div>
+        <div class="rt-lbl">km/h</div>
+      </div>
+      <div class="rt-div"></div>
+      <div class="rt-item">
+        <div class="rt-val green" id="rtBatt">82%</div>
+        <div class="rt-lbl">电量</div>
+      </div>
+      <div class="rt-div"></div>
+      <div class="rt-item">
+        <div class="gear-badge P" id="rtGear">P</div>
+        <div class="rt-lbl" style="margin-top:3px">挡位</div>
+      </div>
+      <div class="rt-div"></div>
+      <div class="rt-item">
+        <div class="rt-val" id="rtRegen">45%</div>
+        <div class="rt-lbl">动能回收</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BSD Alerts -->
+  <div class="alert-row" id="alertRow">
+    <div class="alert-pill" id="bsdL">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9 17H5a2 2 0 0 0-2 2"/><path d="M12 17v4"/><path d="M15 17h4a2 2 0 0 1 2 2"/></svg>左盲区 正常
+    </div>
+    <div class="alert-pill" id="bsdR">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M15 17h4a2 2 0 0 1 2 2"/><path d="M12 17v4"/><path d="M9 17H5a2 2 0 0 0-2 2"/></svg>右盲区 正常
+    </div>
+    <div class="alert-pill" id="apStatus">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>AP 待机
+    </div>
+  </div>
+
+  <!-- Quick Grid -->
+  <div class="qgrid">
+    <div class="qcard" onclick="go('shortcut')">
+      <div class="qcard-icon" style="background:rgba(140,80,255,0.15)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="rgba(160,110,255,.9)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      </div>
+      <div class="qcard-title">快捷按键</div>
+      <div class="qcard-sub">方向盘功能映射</div>
+    </div>
+    <div class="qcard" onclick="go('ota')">
+      <div class="qcard-icon" style="background:rgba(45,217,143,0.12)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      </div>
+      <div class="qcard-title">OTA升级</div>
+      <div class="qcard-sub" style="color:var(--green)">v2.3.8 当前最新</div>
+    </div>
+    <div class="qcard" onclick="go('ambient')">
+      <div class="qcard-icon" style="background:rgba(232,49,42,0.1)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </div>
+      <div class="qcard-title">氛围灯</div>
+      <div class="qcard-sub">RGB·亮度·模式</div>
+      <div class="qcard-badge" id="ambBadge" style="background:rgba(232,49,42,0.1);color:var(--red)">开</div>
+    </div>
+    <div class="qcard" onclick="go('control')">
+      <div class="qcard-icon" style="background:rgba(74,143,232,0.12)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </div>
+      <div class="qcard-title">车辆控制</div>
+      <div class="qcard-sub">车门·空调·座椅</div>
+    </div>
+  </div>
+
+  <!-- Device Status -->
+  <div class="sec-hd">
+    <span class="sec-title">设备状态</span>
+    <span class="sec-more">详细 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11"><polyline points="9 18 15 12 9 6"/></svg></span>
+  </div>
+  <div class="stat-row">
+    <div class="stat-item">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg></div>
+      <div class="stat-v g">优秀</div><div class="stat-l">蓝牙</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4"/></svg></div>
+      <div class="stat-v">12.6V</div><div class="stat-l">电压</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></div>
+      <div class="stat-v">36°C</div><div class="stat-l">温度</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div class="stat-v r">正常</div><div class="stat-l">运行</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SHORTCUT ═══ -->
+<div class="scr" id="s-shortcut">
+  <div class="ph">
+    <div class="ph-back" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div><div class="pg-title">快捷按键</div><div class="pg-sub">自定义SC方向盘功能</div></div>
+  </div>
+  <div class="sw-wrap">
+    <div class="sw-canvas">
+      <svg width="230" height="170" viewBox="0 0 230 170" fill="none">
+        <defs>
+          <radialGradient id="hubGrad" cx="50%" cy="40%" r="70%">
+            <stop offset="0%" stop-color="#222228"/>
+            <stop offset="100%" stop-color="#111116"/>
           </radialGradient>
         </defs>
-        <rect width="358" height="170" fill="#0A080C"/>
-        <!-- Dashboard ambient line -->
-        <path d="M0 120 Q90 108 180 112 Q270 116 358 108" stroke="#E8312A" stroke-width="2" fill="none" opacity="0.6"/>
-        <!-- Glow under dashboard -->
-        <ellipse cx="179" cy="140" rx="160" ry="30" fill="url(#glow1)"/>
-        <!-- Seat outlines -->
-        <path d="M40 170 L40 130 Q60 115 100 118 L120 130 L120 170" fill="#100C10" stroke="#1A1510" stroke-width="1"/>
-        <path d="M238 170 L238 130 Q258 115 298 118 L318 130 L318 170" fill="#100C10" stroke="#1A1510" stroke-width="1"/>
-        <!-- Footwell glow -->
-        <ellipse cx="80" cy="168" rx="35" ry="8" fill="#E8312A" opacity="0.15"/>
-        <ellipse cx="278" cy="168" rx="35" ry="8" fill="#E8312A" opacity="0.15"/>
+        <!-- Outer ring -->
+        <circle cx="115" cy="88" r="76" stroke="#252528" stroke-width="14" fill="none"/>
+        <circle cx="115" cy="88" r="76" stroke="#1A1A1E" stroke-width="11" fill="none"/>
+        <!-- Spokes -->
+        <path d="M56 136 L90 95" stroke="#1E1E24" stroke-width="11" stroke-linecap="round"/>
+        <path d="M174 136 L140 95" stroke="#1E1E24" stroke-width="11" stroke-linecap="round"/>
+        <path d="M115 12 L115 56" stroke="#1E1E24" stroke-width="11" stroke-linecap="round"/>
+        <!-- Hub -->
+        <circle cx="115" cy="88" r="38" fill="url(#hubGrad)" stroke="#252528" stroke-width="0.8"/>
+        <!-- Tesla T -->
+        <path d="M104 76 L126 76" stroke="#454550" stroke-width="2" stroke-linecap="round"/>
+        <path d="M115 76 L115 100" stroke="#454550" stroke-width="2" stroke-linecap="round"/>
+        <!-- Left button -->
+        <rect x="20" y="55" width="38" height="30" rx="7" fill="#1A1A20" stroke="#E8312A" stroke-width="1.5"/>
+        <line x1="32" y1="70" x2="46" y2="70" stroke="#E8312A" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="39" y1="63" x2="39" y2="77" stroke="#E8312A" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Right button -->
+        <rect x="172" y="55" width="38" height="30" rx="7" fill="#1A1A20" stroke="#E8312A" stroke-width="1.5"/>
+        <circle cx="191" cy="70" r="6" stroke="#E8312A" stroke-width="1.5"/>
+        <line x1="186" y1="65" x2="196" y2="75" stroke="#E8312A" stroke-width="1" stroke-linecap="round"/>
+        <!-- Scroll left -->
+        <rect x="29" y="103" width="18" height="32" rx="9" fill="#181820" stroke="#2E2E38" stroke-width="1"/>
+        <line x1="38" y1="114" x2="38" y2="124" stroke="#3A3A46" stroke-width="1.8" stroke-linecap="round"/>
+        <!-- Scroll right -->
+        <rect x="183" y="103" width="18" height="32" rx="9" fill="#181820" stroke="#2E2E38" stroke-width="1"/>
+        <line x1="192" y1="114" x2="192" y2="124" stroke="#3A3A46" stroke-width="1.8" stroke-linecap="round"/>
       </svg>
-      <div class="ambient-overlay"></div>
     </div>
-
-    <div class="al-tabs">
-      <div class="al-tab active">颜色</div>
-      <div class="al-tab">模式</div>
-      <div class="al-tab">音乐律动</div>
-      <div class="al-tab">更多</div>
-    </div>
-
-    <div class="color-swatches">
-      <div class="swatch selected" style="background:#E8312A;"></div>
-      <div class="swatch" style="background:#F5842A;"></div>
-      <div class="swatch" style="background:#F5C923;"></div>
-      <div class="swatch" style="background:#3ECF8E;"></div>
-      <div class="swatch" style="background:#27AEF5;"></div>
-      <div class="swatch" style="background:#4A6CF7;"></div>
-      <div class="swatch" style="background:#9B59B6;"></div>
-      <div class="swatch" style="background:#F472B6;"></div>
-      <div class="swatch" style="background:#FFFFFF;"></div>
-    </div>
-
-    <div class="color-picker-wrap">
-      <canvas class="color-canvas" id="colorCanvas"></canvas>
-      <div class="picker-handle" id="pickerHandle"></div>
-    </div>
-
-    <div class="brightness-row">
-      <span class="brightness-label">亮度</span>
-      <div class="brightness-bar">
-        <div class="brightness-fill"></div>
-        <div class="brightness-handle"></div>
-      </div>
-      <span class="brightness-pct">80%</span>
+    <div class="tab-row" id="scTabs">
+      <div class="tab-btn on" data-tab="0">单击</div>
+      <div class="tab-btn" data-tab="1">双击</div>
+      <div class="tab-btn" data-tab="2">长按</div>
+      <div class="tab-btn" data-tab="3">滚轮</div>
     </div>
   </div>
 
-  <!-- SCENE MODE -->
-  <div class="screen" id="screen-scene">
-    <div class="page-header">
-      <div class="back-btn" onclick="showScreen('home')">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
-      </div>
-      <div class="page-title">场景模式</div>
-      <div style="margin-left:auto;width:28px;height:28px;display:flex;align-items:center;justify-content:center;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </div>
+  <div class="sc-list" id="scList"></div>
+  <button class="save-btn" onclick="saveConfig()">保存配置到设备</button>
+</div>
+
+<!-- ═══ CONTROL ═══ -->
+<div class="scr" id="s-control">
+  <div class="ph">
+    <div class="ph-back" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div><div class="pg-title">车辆控制</div><div class="pg-sub">CAN MCU 指令下发</div></div>
+  </div>
+
+  <!-- AP & 常用功能 -->
+  <div class="ctrl-section">
+    <div class="ctrl-hd">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      常用功能
     </div>
-    <div class="scene-list">
-      <div class="scene-card">
-        <div class="scene-bg-div" style="background:linear-gradient(135deg,#1A2A1A 0%,#2A4A2A 40%,#3A6A3A 100%);"></div>
-        <div class="scene-overlay" style="background:linear-gradient(90deg,rgba(10,30,10,0.8) 0%,transparent 65%);">
-          <div class="scene-info">
-            <div class="scene-name">舒适模式</div>
-            <div class="scene-desc">适合日常驾驶，平衡舒适与性能</div>
-          </div>
-          <button class="apply-btn">应用</button>
-        </div>
-        <div class="scene-badge">当前使用</div>
+    <div class="ctrl-grid">
+      <div class="ctrl-btn" onclick="toggleCtrl(this,'ap','AP 自动驾驶')" data-state="0">
+        <div class="cb-state" style="background:var(--t3)"></div>
+        <div class="cb-icon" style="background:rgba(74,143,232,0.12)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M3 12h2M19 12h2M12 3v2M12 19v2"/></svg></div>
+        <div class="cb-label">AP 自动驾驶</div>
       </div>
-      <div class="scene-card">
-        <div class="scene-bg-div" style="background:linear-gradient(135deg,#2A1A0A 0%,#5A2A10 40%,#8A3A18 100%);"></div>
-        <div class="scene-overlay" style="background:linear-gradient(90deg,rgba(20,8,2,0.8) 0%,transparent 65%);">
-          <div class="scene-info">
-            <div class="scene-name">运动模式</div>
-            <div class="scene-desc">提升驾驶响应，增强运动体验</div>
-          </div>
-          <button class="apply-btn">应用</button>
-        </div>
+      <div class="ctrl-btn" onclick="toggleCtrl(this,'donotdisturb','AP 免打扰')" data-state="0">
+        <div class="cb-state" style="background:var(--t3)"></div>
+        <div class="cb-icon" style="background:rgba(74,143,232,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="cb-label">AP 免打扰</div>
       </div>
-      <div class="scene-card">
-        <div class="scene-bg-div" style="background:linear-gradient(135deg,#0A0A1A 0%,#0A1A3A 40%,#1A2A5A 100%);"></div>
-        <div class="scene-overlay" style="background:linear-gradient(90deg,rgba(4,4,14,0.8) 0%,transparent 65%);">
-          <div class="scene-info">
-            <div class="scene-name">夜间模式</div>
-            <div class="scene-desc">柔和灯光，减少夜间驾驶疲劳</div>
-          </div>
-          <button class="apply-btn">应用</button>
-        </div>
+      <div class="ctrl-btn" onclick="pulseCtrl(this,'horn','脉冲喇叭')" data-state="0">
+        <div class="cb-state" style="background:var(--t3)"></div>
+        <div class="cb-icon" style="background:rgba(245,166,35,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.8"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></div>
+        <div class="cb-label">脉冲喇叭</div>
       </div>
-      <div class="scene-card">
-        <div class="scene-bg-div" style="background:linear-gradient(135deg,#1A0A0A 0%,#3A0A0A 40%,#6A1010 100%);"></div>
-        <div class="scene-overlay" style="background:linear-gradient(90deg,rgba(14,2,2,0.8) 0%,transparent 65%);">
-          <div class="scene-info">
-            <div class="scene-name">赛道模式</div>
-            <div class="scene-desc">极致性能输出，赛道专属设置</div>
-          </div>
-          <button class="apply-btn">应用</button>
-        </div>
+      <div class="ctrl-btn" onclick="pulseCtrl(this,'flash','脉冲大灯')" data-state="0">
+        <div class="cb-state" style="background:var(--t3)"></div>
+        <div class="cb-icon" style="background:rgba(245,166,35,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg></div>
+        <div class="cb-label">脉冲大灯</div>
       </div>
-      <div class="scene-card">
-        <div class="scene-bg-div" style="background:linear-gradient(135deg,#0A1A0A 0%,#0A2A1A 40%,#0A3A2A 100%);"></div>
-        <div class="scene-overlay" style="background:linear-gradient(90deg,rgba(2,10,6,0.8) 0%,transparent 65%);">
-          <div class="scene-info">
-            <div class="scene-name">节能模式</div>
-            <div class="scene-desc">优化能耗，提升续航里程</div>
-          </div>
-          <button class="apply-btn">应用</button>
-        </div>
+      <div class="ctrl-btn" onclick="toggleCtrl(this,'acdry','空调干燥')" data-state="0">
+        <div class="cb-state" style="background:var(--t3)"></div>
+        <div class="cb-icon" style="background:rgba(140,80,255,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(160,110,255,.9)" stroke-width="1.8"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="4"/></svg></div>
+        <div class="cb-label">空调干燥</div>
+      </div>
+      <div class="ctrl-btn" onclick="toggleCtrl(this,'batt','电池预热')" data-state="0">
+        <div class="cb-state" style="background:var(--t3)"></div>
+        <div class="cb-icon" style="background:rgba(232,49,42,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></div>
+        <div class="cb-label">电池预热</div>
       </div>
     </div>
   </div>
 
-  <!-- SETTINGS -->
-  <div class="screen" id="screen-settings">
-    <div class="page-header">
-      <div></div>
-      <div class="page-title">设置</div>
+  <!-- 动能回收 -->
+  <div class="ctrl-section">
+    <div class="ctrl-hd">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      动能回收强度
     </div>
-
-    <div class="device-card">
-      <div class="device-avatar">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    <div class="energy-wrap">
+      <div class="energy-label">
+        <span>当前强度</span>
+        <span id="regenLvl" style="color:var(--green);font-family:var(--font);font-size:14px;font-weight:600">3 级</span>
       </div>
-      <div style="flex:1;">
-        <div class="device-name">SC Module
-          <svg class="edit-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </div>
-        <div class="device-id">设备ID: SCM202404010001</div>
-        <div class="device-ver">固件版本: v2.3.8</div>
-      </div>
-      <button class="update-btn">检查更新</button>
+      <div class="energy-steps" id="regenSteps"></div>
     </div>
-
-    <div class="settings-section">
-      <div class="settings-item">
-        <div class="si-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-        <span class="si-label">设备信息</span>
-        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-      <div class="settings-item">
-        <div class="si-icon red"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.38"/></svg></div>
-        <span class="si-label">按键自定义备份与恢复</span>
-        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-      <div class="settings-item">
-        <div class="si-icon green"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
-        <span class="si-label">分享我的配置</span>
-        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-      <div class="settings-item">
-        <div class="si-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
-        <span class="si-label">固件更新设置</span>
-        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-    </div>
-
-    <div class="settings-section">
-      <div class="settings-item">
-        <div class="si-icon gray"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
-        <span class="si-label">使用帮助</span>
-        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-      <div class="settings-item">
-        <div class="si-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-        <span class="si-label">关于我们</span>
-        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-      </div>
-    </div>
-
-    <button class="logout-btn">退出登录</button>
   </div>
 
-  <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
-    <div class="nav-item active" id="nav-home" onclick="showScreen('home')">
-      <div class="nav-icon active">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor"/></svg>
-      </div>
-      <span class="nav-label" style="color:var(--red);">首页</span>
+  <!-- 驾驶模式 -->
+  <div class="ctrl-section">
+    <div class="ctrl-hd">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+      驾驶模式
     </div>
-    <div class="nav-item" id="nav-control" onclick="showScreen('shortcut')">
-      <div class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/></svg>
-      </div>
-      <span class="nav-label">控制</span>
+    <div style="display:flex;gap:8px;padding:14px">
+      <button class="ac-btn on" id="modeComfort" onclick="setMode('comfort')" style="background:rgba(45,217,143,0.1);border-color:var(--green);color:var(--green)">舒适</button>
+      <button class="ac-btn" id="modeSport" onclick="setMode('sport')">运动</button>
+      <button class="ac-btn" id="modeRace" onclick="setMode('race')" style="position:relative">赛道<span style="position:absolute;top:-4px;right:-4px;font-size:8px;background:var(--amber);color:#000;padding:1px 4px;border-radius:4px;font-family:var(--font)">长续航</span></button>
     </div>
-    <div class="nav-item" id="nav-scene" onclick="showScreen('scene')">
-      <div class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      </div>
-      <span class="nav-label">场景</span>
+  </div>
+
+  <!-- 空调风速 -->
+  <div class="ctrl-section">
+    <div class="ctrl-hd">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+      空调风速
     </div>
-    <div class="nav-item" id="nav-settings" onclick="showScreen('settings')">
-      <div class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <div class="ac-wrap">
+      <div class="ac-label">
+        <span>风速档位</span>
+        <span id="acLvl" style="color:var(--blue);font-family:var(--font);font-size:14px;font-weight:600">2 级</span>
       </div>
-      <span class="nav-label">设置</span>
+      <div class="ac-btns">
+        <button class="ac-btn" onclick="acAdj(-3)">−3</button>
+        <button class="ac-btn" onclick="acAdj(-1)">−1</button>
+        <button class="ac-btn primary" onclick="acAdj(1)">+1</button>
+        <button class="ac-btn" onclick="acAdj(3)">+3</button>
+        <button class="ac-btn" onclick="acMin()">最小</button>
+      </div>
     </div>
-  </nav>
+  </div>
+
+  <!-- 车门控制 -->
+  <div class="ctrl-section">
+    <div class="ctrl-hd">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      车门控制
+      <span style="margin-left:auto;font-size:10px;color:var(--t3);font-weight:400;letter-spacing:0">P档·车速为0时有效</span>
+    </div>
+    <div class="door-wrap">
+      <!-- Top view car doors diagram -->
+      <svg class="door-model" viewBox="0 0 320 90" fill="none">
+        <rect x="80" y="8" width="160" height="74" rx="10" fill="#1A1A20" stroke="#2A2A32" stroke-width="1"/>
+        <!-- Left doors -->
+        <rect x="40" y="12" width="42" height="30" rx="5" fill="#141418" stroke="#2E2E38" stroke-width="1" id="dl-lf"/>
+        <rect x="40" y="48" width="42" height="30" rx="5" fill="#141418" stroke="#2E2E38" stroke-width="1" id="dl-lr"/>
+        <!-- Right doors -->
+        <rect x="238" y="12" width="42" height="30" rx="5" fill="#141418" stroke="#2E2E38" stroke-width="1" id="dl-rf"/>
+        <rect x="238" y="48" width="42" height="30" rx="5" fill="#141418" stroke="#2E2E38" stroke-width="1" id="dl-rr"/>
+        <!-- Trunk rear -->
+        <rect x="108" y="76" width="104" height="12" rx="4" fill="#141418" stroke="#2E2E38" stroke-width="1" id="dl-trunk"/>
+        <!-- Frunk front -->
+        <rect x="108" y="2" width="104" height="8" rx="3" fill="#141418" stroke="#2E2E38" stroke-width="1" id="dl-frunk"/>
+        <!-- Labels -->
+        <text x="61" y="31" text-anchor="middle" font-family="Noto Sans SC" font-size="9" fill="#555">左前</text>
+        <text x="61" y="67" text-anchor="middle" font-family="Noto Sans SC" font-size="9" fill="#555">左后</text>
+        <text x="259" y="31" text-anchor="middle" font-family="Noto Sans SC" font-size="9" fill="#555">右前</text>
+        <text x="259" y="67" text-anchor="middle" font-family="Noto Sans SC" font-size="9" fill="#555">右后</text>
+        <text x="160" y="86" text-anchor="middle" font-family="Noto Sans SC" font-size="9" fill="#555">后备箱</text>
+        <text x="160" y="9" text-anchor="middle" font-family="Noto Sans SC" font-size="9" fill="#555">前备箱</text>
+      </svg>
+      <div class="door-btn-row">
+        <div class="door-btn" onclick="openDoor('lf')">左前门</div>
+        <div class="door-btn" onclick="openDoor('lr')">左后门</div>
+        <div class="door-btn" onclick="openDoor('rf')">右前门</div>
+        <div class="door-btn" onclick="openDoor('rr')">右后门</div>
+      </div>
+      <div class="door-btn-row" style="margin-top:6px">
+        <div class="door-btn" onclick="openDoor('frunk')">前备箱</div>
+        <div class="door-btn" onclick="openDoor('trunk')">开后备箱</div>
+        <div class="door-btn" onclick="closeTrunk()" style="background:rgba(232,49,42,0.08);border-color:rgba(232,49,42,0.25);color:var(--red)">关后备箱</div>
+      </div>
+      <div class="door-btn-row" style="margin-top:6px">
+        <div class="door-btn" onclick="toggleCtrl2('mirror','后视镜折叠')">后视镜折叠</div>
+        <div class="door-btn" onclick="toggleCtrl2('light','全车照明')">全车照明</div>
+        <div class="door-btn" onclick="toggleCtrl2('massage','座椅按摩')">座椅按摩</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 座椅 -->
+  <div class="ctrl-section">
+    <div class="ctrl-hd">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      座椅调节
+    </div>
+    <div class="seat-wrap">
+      <div class="seat-row">
+        <div class="seat-side">
+          <div class="seat-title">左侧座椅</div>
+          <div class="seat-btns">
+            <div class="seat-btn" onclick="seatCtrl('lf')">座椅↑</div>
+            <div class="seat-btn" onclick="seatCtrl('lb')">座椅↓</div>
+            <div class="seat-btn" onclick="seatCtrl('lfb')">椅背↑</div>
+            <div class="seat-btn" onclick="seatCtrl('lbb')">椅背↓</div>
+          </div>
+        </div>
+        <div style="width:0.5px;background:var(--b1)"></div>
+        <div class="seat-side">
+          <div class="seat-title">右侧座椅</div>
+          <div class="seat-btns">
+            <div class="seat-btn" onclick="seatCtrl('rf')">座椅↑</div>
+            <div class="seat-btn" onclick="seatCtrl('rb')">座椅↓</div>
+            <div class="seat-btn" onclick="seatCtrl('rfb')">椅背↑</div>
+            <div class="seat-btn" onclick="seatCtrl('rbb')">椅背↓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 童锁 -->
+  <div class="ctrl-section">
+    <div class="ctrl-hd">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      童锁控制
+      <span style="margin-left:auto;font-size:10px;color:var(--t3);font-weight:400;letter-spacing:0">解锁有效期 10秒</span>
+    </div>
+    <div style="display:flex;gap:8px;padding:14px">
+      <div class="door-btn" style="flex:1" onclick="childLock('left')">左侧解锁</div>
+      <div class="door-btn" style="flex:1" onclick="childLock('right')">右侧解锁</div>
+      <div class="door-btn" style="flex:1" onclick="childLock('both')">两侧解锁</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ OTA ═══ -->
+<div class="scr" id="s-ota">
+  <div class="ph">
+    <div class="ph-back" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div><div class="pg-title">OTA 固件升级</div></div>
+  </div>
+  <div class="ota-hero">
+    <div class="ring-outer">
+      <svg width="148" height="148" class="ring-svg">
+        <circle class="ring-bg" cx="74" cy="74" r="64"/>
+        <circle class="ring-red" cx="74" cy="74" r="64" id="otaRing" style="stroke-dashoffset:102"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-pct" id="otaPct">75%</div>
+        <div class="ring-lbl">正在升级</div>
+      </div>
+    </div>
+    <div class="ota-ver">正在升级到 <b>v2.5.3</b></div>
+  </div>
+  <div class="ota-steps">
+    <div class="ota-step"><div class="step-ico done"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div><span class="step-name">准备升级包</span><span class="step-time">完成</span></div>
+    <div class="ota-step"><div class="step-ico done"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div><span class="step-name">验证升级包</span><span class="step-time">完成</span></div>
+    <div class="ota-step"><div class="step-ico done"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div><span class="step-name">传输升级包</span><span class="step-time">完成</span></div>
+    <div class="ota-step"><div class="step-ico act"><div class="pulse"></div></div><span class="step-name act">写入固件</span><span class="step-time" style="color:var(--red)">进行中</span></div>
+    <div class="ota-step"><div class="step-ico idle"></div><span class="step-name">重启设备</span><span class="step-time">等待</span></div>
+  </div>
+  <div class="ota-note" style="margin-top:12px">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    升级过程中请勿断开蓝牙连接，请保持设备供电正常。<br>升级预计需要 2 分钟，升级完成后设备将自动重启。
+  </div>
+</div>
+
+<!-- ═══ AMBIENT ═══ -->
+<div class="scr" id="s-ambient">
+  <div class="ph">
+    <div class="ph-back" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div><div class="pg-title">氛围灯控制</div><div class="pg-sub">0x03 RGB·亮度实时下发</div></div>
+    <div class="ph-right">
+      <div id="ambPower" onclick="toggleAmb()" style="cursor:pointer;width:34px;height:20px;border-radius:10px;background:var(--green);position:relative;transition:background .3s">
+        <div style="position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:2px;right:2px;transition:right .3s"></div>
+      </div>
+    </div>
+  </div>
+  <div class="amb-preview" id="ambPreview">
+    <svg id="ambSvg" viewBox="0 0 358 160" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="ag" cx="50%" cy="100%" r="60%" id="ambGrad">
+          <stop offset="0%" stop-color="#E8312A" stop-opacity="0.6" id="agStop"/>
+          <stop offset="100%" stop-color="#E8312A" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="358" height="160" fill="#08080E"/>
+      <path d="M0 110 Q90 98 179 103 Q268 108 358 98" stroke="#E8312A" stroke-width="2.5" fill="none" id="ambLine" opacity="0.7"/>
+      <ellipse cx="179" cy="140" rx="160" ry="28" fill="url(#ambGrad)" id="ambEllipse"/>
+      <path d="M30 160 L30 120 Q52 105 90 108 L115 120 L115 160" fill="#0C0810" stroke="#14101A" stroke-width="0.5"/>
+      <path d="M243 160 L243 120 Q265 105 303 108 L328 120 L328 160" fill="#0C0810" stroke="#14101A" stroke-width="0.5"/>
+      <ellipse cx="72" cy="158" rx="40" ry="8" fill="#E8312A" opacity="0.12" id="fwL"/>
+      <ellipse cx="286" cy="158" rx="40" ry="8" fill="#E8312A" opacity="0.12" id="fwR"/>
+    </svg>
+  </div>
+  <div class="amb-tabs">
+    <div class="amb-tab on" data-at="0">颜色</div>
+    <div class="amb-tab" data-at="1">模式</div>
+    <div class="amb-tab" data-at="2">音乐律动</div>
+  </div>
+  <div id="ambColor">
+    <div class="swatches">
+      <div class="sw-dot on" style="background:#E8312A" data-rgb="232,49,42"></div>
+      <div class="sw-dot" style="background:#F5842A" data-rgb="245,132,42"></div>
+      <div class="sw-dot" style="background:#F5C923" data-rgb="245,201,35"></div>
+      <div class="sw-dot" style="background:#2DD98F" data-rgb="45,217,143"></div>
+      <div class="sw-dot" style="background:#4A8FE8" data-rgb="74,143,232"></div>
+      <div class="sw-dot" style="background:#4A4AF5" data-rgb="74,74,245"></div>
+      <div class="sw-dot" style="background:#9B59B6" data-rgb="155,89,182"></div>
+      <div class="sw-dot" style="background:#F472B6" data-rgb="244,114,182"></div>
+      <div class="sw-dot" style="background:#FFFFFF" data-rgb="255,255,255"></div>
+    </div>
+    <div class="picker-area" id="pickerArea">
+      <canvas id="colorCanvas"></canvas>
+      <div class="picker-dot" id="pickerDot"></div>
+    </div>
+    <div class="bright-row">
+      <span class="bright-lbl">亮度</span>
+      <div class="bright-track" id="brightTrack">
+        <div class="bright-thumb" id="brightThumb"></div>
+      </div>
+      <span class="bright-pct" id="brightPct">80%</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;padding:0 14px 14px">
+      <div style="width:24px;height:24px;border-radius:50%;border:2px solid var(--b2)" id="colorPreview" style="background:rgba(232,49,42,1)"></div>
+      <span style="font-size:12px;color:var(--t3)">R:<span id="rv">232</span> G:<span id="gv">49</span> B:<span id="bv">42</span></span>
+      <span style="margin-left:auto;font-size:11px;color:var(--t3)">CMD 0x03 已就绪</span>
+    </div>
+  </div>
+  <div id="ambMode" style="display:none;padding:0 14px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div class="ctrl-btn" style="border-radius:var(--r12);background:var(--bg2);border:0.5px solid var(--b1);flex-direction:column" onclick="setAmbMode('breath')">
+        <div class="cb-icon" style="background:rgba(74,143,232,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <div class="cb-label">呼吸灯</div>
+      </div>
+      <div class="ctrl-btn" style="border-radius:var(--r12);background:var(--bg2);border:0.5px solid var(--b1);flex-direction:column" onclick="setAmbMode('flow')">
+        <div class="cb-icon" style="background:rgba(155,89,182,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(155,89,182,.9)" stroke-width="1.8"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg></div>
+        <div class="cb-label">流水灯</div>
+      </div>
+      <div class="ctrl-btn" style="border-radius:var(--r12);background:var(--bg2);border:0.5px solid var(--b1);flex-direction:column" onclick="setAmbMode('static')">
+        <div class="cb-icon" style="background:rgba(45,217,143,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/></svg></div>
+        <div class="cb-label">常亮</div>
+      </div>
+      <div class="ctrl-btn" style="border-radius:var(--r12);background:var(--bg2);border:0.5px solid var(--b1);flex-direction:column" onclick="setAmbMode('off')">
+        <div class="cb-icon" style="background:var(--bg3)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="1.8"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        <div class="cb-label">关闭</div>
+      </div>
+    </div>
+  </div>
+  <div id="ambMusic" style="display:none;padding:0 14px 14px">
+    <div style="background:var(--bg2);border:0.5px solid var(--b1);border-radius:var(--r12);padding:20px;text-align:center">
+      <div style="font-size:13px;color:var(--t3);margin-bottom:8px">音乐律动模式</div>
+      <div style="font-size:12px;color:var(--t3)">随音乐节奏动态变换灯效<br>需要蓝牙连接并开启麦克风权限</div>
+      <div style="margin-top:14px">
+        <div id="musicBars" style="display:flex;align-items:flex-end;justify-content:center;gap:4px;height:40px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SCENE ═══ -->
+<div class="scr" id="s-scene">
+  <div class="ph">
+    <div class="ph-back" onclick="go('home')"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div><div class="pg-title">场景模式</div><div class="pg-sub">多功能联动预设</div></div>
+    <div class="ph-right" style="cursor:pointer"><svg viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2" width="20" height="20"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+  </div>
+  <div class="scene-wrap">
+    <div class="scene-card" onclick="applyScene('comfort')">
+      <div class="scene-bg" style="background:linear-gradient(135deg,#0E1E10 0%,#1A3A1E 50%,#2A5A30 100%)"></div>
+      <div class="scene-inner">
+        <div class="scene-info"><div class="scene-name">舒适模式</div><div class="scene-desc">平衡舒适与性能 · 软氛围灯 · 低风速</div></div>
+        <button class="scene-apply">应用</button>
+      </div>
+      <div class="scene-badge">当前</div>
+    </div>
+    <div class="scene-card" onclick="applyScene('sport')">
+      <div class="scene-bg" style="background:linear-gradient(135deg,#1A0E06 0%,#3A1608 50%,#6A2410 100%)"></div>
+      <div class="scene-inner">
+        <div class="scene-info"><div class="scene-name">运动模式</div><div class="scene-desc">响应提升 · 红色氛围灯 · 动能回收Max</div></div>
+        <button class="scene-apply">应用</button>
+      </div>
+    </div>
+    <div class="scene-card" onclick="applyScene('night')">
+      <div class="scene-bg" style="background:linear-gradient(135deg,#060610 0%,#0A0E28 50%,#121840 100%)"></div>
+      <div class="scene-inner">
+        <div class="scene-info"><div class="scene-name">夜间模式</div><div class="scene-desc">柔和暖光 · 自动屏幕降亮 · 减少疲劳</div></div>
+        <button class="scene-apply">应用</button>
+      </div>
+    </div>
+    <div class="scene-card" onclick="applyScene('race')">
+      <div class="scene-bg" style="background:linear-gradient(135deg,#180606 0%,#300808 50%,#600C0C 100%)"></div>
+      <div class="scene-inner">
+        <div class="scene-info"><div class="scene-name">赛道模式</div><div class="scene-desc">极致性能 · 赛车模式开启 · 长续航限定</div></div>
+        <button class="scene-apply">应用</button>
+      </div>
+    </div>
+    <div class="scene-card" onclick="applyScene('eco')">
+      <div class="scene-bg" style="background:linear-gradient(135deg,#061210 0%,#0A2418 50%,#103828 100%)"></div>
+      <div class="scene-inner">
+        <div class="scene-info"><div class="scene-name">节能模式</div><div class="scene-desc">能耗最优 · 动能回收Max · 氛围灯关</div></div>
+        <button class="scene-apply">应用</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SETTINGS ═══ -->
+<div class="scr" id="s-settings">
+  <div class="ph" style="justify-content:center"><div class="pg-title">设置</div></div>
+  <div class="dev-card">
+    <div class="dev-ava"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+    <div style="flex:1">
+      <div class="dev-name">SC Module <svg viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2" width="13" height="13"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+      <div class="dev-id">设备ID: SCM202404010001</div>
+      <div class="dev-ver">固件: v2.3.8 · 协议: CAN-UART</div>
+    </div>
+    <button class="upd-btn">检查更新</button>
+  </div>
+  <div class="set-list">
+    <div class="set-item"><div class="si-ico" style="background:rgba(74,143,232,0.12)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><span class="si-lbl">设备信息</span><svg class="si-arr" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    <div class="set-item"><div class="si-ico" style="background:rgba(232,49,42,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.38"/></svg></div><span class="si-lbl">按键配置备份与恢复</span><svg class="si-arr" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    <div class="set-item"><div class="si-ico" style="background:rgba(45,217,143,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div><span class="si-lbl">分享我的配置</span><svg class="si-arr" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    <div class="set-item"><div class="si-ico" style="background:rgba(245,166,35,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.8"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div><span class="si-lbl">固件更新设置</span><svg class="si-arr" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    <div class="set-item"><div class="si-ico" style="background:rgba(140,80,255,0.1)"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(160,110,255,.9)" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><span class="si-lbl">通知与提醒</span><svg class="si-arr" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+  </div>
+  <div class="set-list">
+    <div class="set-item"><div class="si-ico" style="background:var(--bg3)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div><span class="si-lbl">使用帮助</span><svg class="si-arr" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    <div class="set-item"><div class="si-ico" style="background:var(--bg3)"><svg viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><span class="si-lbl">关于 SC Master</span><svg class="si-arr" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+  </div>
+  <button class="logout-btn">退出登录</button>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <div class="ni on" id="n-home" onclick="go('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    <span>首页</span>
+  </div>
+  <div class="ni" id="n-control" onclick="go('control')">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    <span>控制</span>
+  </div>
+  <div class="ni" id="n-scene" onclick="go('scene')">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <span>场景</span>
+  </div>
+  <div class="ni" id="n-settings" onclick="go('settings')">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>我的</span>
+  </div>
+</nav>
+
+<!-- TOAST -->
+<div id="toast" style="position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(30,30,36,0.95);backdrop-filter:blur(12px);border:0.5px solid var(--b2);border-radius:20px;padding:9px 18px;font-size:13px;color:var(--t1);opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:999"></div>
 </div>
 
 <script>
-const screens = ['home','shortcut','ota','ambient','scene','settings'];
-const navMap = {home:'nav-home',shortcut:'nav-control',ota:'nav-control',ambient:'nav-control',scene:'nav-scene',settings:'nav-settings'};
+// ── NAV ──
+const navMap={home:'n-home',control:'n-control',shortcut:'n-control',ota:'n-home',ambient:'n-home',scene:'n-scene',settings:'n-settings'};
+function go(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById('s-'+id).classList.add('on');
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  const nid=navMap[id]||'n-home';
+  document.getElementById(nid)&&document.getElementById(nid).classList.add('on');
+  if(id==='ambient')initAmb();
+  if(id==='shortcut')renderSC();
+}
 
-function showScreen(name) {
-  screens.forEach(s => {
-    const el = document.getElementById('screen-'+s);
-    if(el) el.classList.remove('active');
+// ── TOAST ──
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.opacity='1';t.style.transform='translateX(-50%) translateY(0)';
+  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateX(-50%) translateY(20px)'},2000);
+}
+
+// ── SHORTCUT DATA ──
+const scData={
+  0:[
+    {icon:'horn',name:'左侧按键',val:'脉冲喇叭'},
+    {icon:'camera',name:'右侧按键',val:'360全景影像'},
+    {icon:'up',name:'滚轮上滑',val:'音量 +1'},
+    {icon:'down',name:'滚轮下滑',val:'音量 −1'},
+    {icon:'press',name:'滚轮按压',val:'静音'},
+    {icon:'hold',name:'长按滚轮',val:'切换驾驶模式'}
+  ],
+  1:[
+    {icon:'trunk',name:'左侧双击',val:'打开前备箱'},
+    {icon:'mirror',name:'右侧双击',val:'折叠后视镜'},
+    {icon:'up',name:'滚轮快滑↑',val:'音量 +3'},
+    {icon:'down',name:'滚轮快滑↓',val:'音量 −3'},
+    {icon:'press',name:'滚轮双击',val:'切换音乐源'},
+    {icon:'hold',name:'长按左键',val:'AP 开启/关闭'}
+  ],
+  2:[
+    {icon:'ap',name:'左键长按',val:'AP 自动驾驶'},
+    {icon:'trunk',name:'右键长按',val:'后备箱开/关'},
+    {icon:'up',name:'长按滚轮↑',val:'最大音量'},
+    {icon:'down',name:'长按滚轮↓',val:'最小音量'},
+    {icon:'dry',name:'滚轮长按',val:'空调干燥开关'}
+  ],
+  3:[
+    {icon:'up',name:'滚轮向上',val:'音量 +1'},
+    {icon:'down',name:'滚轮向下',val:'音量 −1'},
+    {icon:'fast',name:'快速上滑',val:'音量 +3'},
+    {icon:'fast2',name:'快速下滑',val:'音量 −3'},
+    {icon:'min',name:'极速上滑',val:'最大音量'},
+    {icon:'press',name:'按压滚轮',val:'静音切换'}
+  ]
+};
+const scIcons={
+  horn:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
+  camera:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
+  up:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="18 15 12 9 6 15"/></svg>',
+  down:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="6 9 12 15 18 9"/></svg>',
+  press:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>',
+  hold:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+  trunk:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/></svg>',
+  mirror:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>',
+  ap:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M3 12h2M19 12h2M12 3v2M12 19v2"/></svg>',
+  dry:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>',
+  fast:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="18 15 12 9 6 15"/><polyline points="18 19 12 13 6 19"/></svg>',
+  fast2:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="6 9 12 15 18 9"/><polyline points="6 5 12 11 18 5"/></svg>',
+  min:'<svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/></svg>'
+};
+let curTab=0;
+function renderSC(){
+  const items=scData[curTab]||[];
+  document.getElementById('scList').innerHTML=items.map(it=>`
+    <div class="sc-item">
+      <div class="sc-ico">${scIcons[it.icon]||scIcons['press']}</div>
+      <span class="sc-name">${it.name}</span>
+      <div class="sc-val">${it.val} <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div>`).join('');
+}
+document.getElementById('scTabs').addEventListener('click',e=>{
+  const btn=e.target.closest('.tab-btn');if(!btn)return;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  curTab=+btn.dataset.tab;
+  renderSC();
+});
+renderSC();
+
+function saveConfig(){toast('✓ 配置已通过 CMD 0x01 下发至设备')}
+
+// ── CTRL ──
+function toggleCtrl(el,key,label){
+  const s=el.dataset.state==='0'?1:0;
+  el.dataset.state=s;
+  const dot=el.querySelector('.cb-state');
+  const ico=el.querySelector('.cb-icon');
+  if(s){dot.style.background='var(--green)';ico.style.filter='brightness(1.2)';toast(`✓ ${label} 已开启`)}
+  else{dot.style.background='var(--t3)';ico.style.filter='';toast(`${label} 已关闭`)}
+}
+function toggleCtrl2(key,label){toast(`✓ ${label} 指令已发送`)}
+function pulseCtrl(el,key,label){
+  el.style.background='var(--bg4)';
+  toast(`✓ ${label} 脉冲已触发`);
+  setTimeout(()=>el.style.background='',400);
+}
+
+// REGEN
+let regenLv=3;
+function buildRegen(){
+  const c=document.getElementById('regenSteps');if(!c)return;
+  c.innerHTML='';
+  for(let i=1;i<=4;i++){
+    const d=document.createElement('div');
+    d.className='estep'+(i<=regenLv?' on':'');
+    d.onclick=(()=>{const lv=i;return()=>setRegen(lv)})();
+    c.appendChild(d);
+  }
+}
+function setRegen(lv){
+  regenLv=lv;
+  document.getElementById('regenLvl').textContent=lv+' 级';
+  document.getElementById('rtRegen').textContent=Math.round(lv/4*100)+'%';
+  buildRegen();
+  toast(`动能回收已设为 ${lv} 级 (CMD 0x01 参数2)`);
+}
+buildRegen();
+
+// AC
+let acLv=2;
+function acAdj(d){acLv=Math.max(1,Math.min(10,acLv+d));document.getElementById('acLvl').textContent=acLv+' 级';toast(`空调风速 ${acLv} 级 (CMD 0x01 参数6)`)}
+function acMin(){acLv=1;document.getElementById('acLvl').textContent='1 级';toast('空调风速已设为最小')}
+
+// DRIVE MODE
+function setMode(m){
+  ['comfort','sport','race'].forEach(k=>{
+    const b=document.getElementById('mode'+k.charAt(0).toUpperCase()+k.slice(1));
+    b.style.background='';b.style.borderColor='';b.style.color='';
   });
-  const el = document.getElementById('screen-'+name);
-  if(el) el.classList.add('active');
+  const b=document.getElementById('mode'+m.charAt(0).toUpperCase()+m.slice(1));
+  if(m==='comfort'){b.style.background='rgba(45,217,143,0.1)';b.style.borderColor='var(--green)';b.style.color='var(--green)';toast('舒适模式已激活 (CMD 0x01 参数6 bit7=0)')}
+  else if(m==='sport'){b.style.background='rgba(232,49,42,0.1)';b.style.borderColor='var(--red)';b.style.color='var(--red)';toast('运动模式已激活 (CMD 0x01 参数6 bit7=1)')}
+  else{b.style.background='rgba(245,166,35,0.1)';b.style.borderColor='var(--amber)';b.style.color='var(--amber)';toast('赛道模式已激活 (CMD 0x01 参数6 bit6=1)')}
+}
 
-  ['nav-home','nav-control','nav-scene','nav-settings'].forEach(id => {
-    const nav = document.getElementById(id);
-    if(!nav) return;
-    const icon = nav.querySelector('.nav-icon');
-    const label = nav.querySelector('.nav-label');
-    icon.classList.remove('active');
-    label.style.color = 'var(--text3)';
-    const svgs = icon.querySelectorAll('path,rect,circle,polyline,line,polygon');
-    svgs.forEach(el => { el.removeAttribute('stroke'); el.setAttribute('stroke','var(--text3)'); });
+// DOORS
+function openDoor(d){
+  const map={lf:'左前门',lr:'左后门',rf:'右前门',rr:'右后门',frunk:'前备箱',trunk:'后备箱'};
+  const svgMap={lf:'dl-lf',lr:'dl-lr',rf:'dl-rf',rr:'dl-rr',frunk:'dl-frunk',trunk:'dl-trunk'};
+  const el=document.getElementById(svgMap[d]);
+  if(el){el.setAttribute('stroke','#E8312A');el.setAttribute('stroke-width','2');setTimeout(()=>{el.setAttribute('stroke','#2E2E38');el.setAttribute('stroke-width','1')},1200)}
+  toast(`✓ ${map[d]} 开启指令已发送`);
+}
+function closeTrunk(){
+  const el=document.getElementById('dl-trunk');
+  if(el){el.setAttribute('stroke','var(--green)');setTimeout(()=>{el.setAttribute('stroke','#2E2E38')},1200)}
+  toast('✓ 后备箱关闭指令已发送');
+}
+function childLock(s){
+  const m={left:'左侧',right:'右侧',both:'两侧'};
+  toast(`✓ ${m[s]}童锁解锁 (10秒有效)`);
+}
+function seatCtrl(d){
+  const m={lf:'左座椅前移',lb:'左座椅后移',lfb:'左椅背前倾',lbb:'左椅背后仰',rf:'右座椅前移',rb:'右座椅后移',rfb:'右椅背前倾',rbb:'右椅背后仰'};
+  toast('✓ '+m[d]);
+}
+
+// OTA RING
+let otaP=75;
+const ring=document.getElementById('otaRing');
+const pctEl=document.getElementById('otaPct');
+function tickOta(){
+  if(document.getElementById('s-ota').classList.contains('on')&&otaP<100){
+    otaP=Math.min(100,otaP+0.25);
+    const off=408-(408*otaP/100);
+    ring.style.strokeDashoffset=off;
+    pctEl.textContent=Math.round(otaP)+'%';
+  }
+}
+setInterval(tickOta,250);
+
+// AMBIENT
+let ambOn=true,ambR=232,ambG=49,ambB=42,ambBright=80;
+function updateAmbColors(){
+  const hex=(r,g,b)=>`rgb(${r},${g},${b})`;
+  const c=hex(ambR,ambG,ambB);
+  document.getElementById('ambLine')&&(document.getElementById('ambLine').setAttribute('stroke',c));
+  document.getElementById('agStop')&&(document.getElementById('agStop').setAttribute('stop-color',c));
+  document.getElementById('fwL')&&(document.getElementById('fwL').setAttribute('fill',c));
+  document.getElementById('fwR')&&(document.getElementById('fwR').setAttribute('fill',c));
+  document.getElementById('colorPreview')&&(document.getElementById('colorPreview').style.background=c);
+  document.getElementById('rv')&&(document.getElementById('rv').textContent=ambR);
+  document.getElementById('gv')&&(document.getElementById('gv').textContent=ambG);
+  document.getElementById('bv')&&(document.getElementById('bv').textContent=ambB);
+}
+function toggleAmb(){
+  ambOn=!ambOn;
+  const pw=document.getElementById('ambPower');
+  const thumb=pw.querySelector('div');
+  if(ambOn){pw.style.background='var(--green)';thumb.style.right='2px';toast('氛围灯已开启 (CMD 0x03)')}
+  else{pw.style.background='var(--bg4)';thumb.style.right='16px';toast('氛围灯已关闭')}
+}
+document.querySelectorAll('.sw-dot').forEach(d=>{
+  d.addEventListener('click',function(){
+    document.querySelectorAll('.sw-dot').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on');
+    const rgb=this.dataset.rgb.split(',');
+    ambR=+rgb[0];ambG=+rgb[1];ambB=+rgb[2];
+    updateAmbColors();
+    toast(`RGB(${ambR},${ambG},${ambB}) 已下发`);
   });
+});
+document.querySelectorAll('.amb-tab').forEach(t=>{
+  t.addEventListener('click',function(){
+    document.querySelectorAll('.amb-tab').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on');
+    const i=+this.dataset.at;
+    document.getElementById('ambColor').style.display=i===0?'block':'none';
+    document.getElementById('ambMode').style.display=i===1?'block':'none';
+    document.getElementById('ambMusic').style.display=i===2?'block':'none';
+    if(i===2)startMusicBars();
+  });
+});
+function setAmbMode(m){const l={breath:'呼吸灯',flow:'流水灯',static:'常亮',off:'关闭'};toast(`氛围灯模式：${l[m]}`)}
 
-  const activeNav = navMap[name];
-  if(activeNav) {
-    const nav = document.getElementById(activeNav);
-    if(nav) {
-      const icon = nav.querySelector('.nav-icon');
-      const label = nav.querySelector('.nav-label');
-      icon.classList.add('active');
-      label.style.color = 'var(--red)';
-      const svgs = icon.querySelectorAll('path,rect,circle,polyline,line,polygon');
-      svgs.forEach(el => { el.removeAttribute('stroke'); el.setAttribute('stroke','var(--red)'); });
+// Music bars animation
+let mbInterval=null;
+function startMusicBars(){
+  const c=document.getElementById('musicBars');
+  if(!c)return;
+  c.innerHTML=Array.from({length:16},(_,i)=>`<div id="mb${i}" style="width:10px;border-radius:3px;background:rgba(232,49,42,0.7);height:4px;transition:height .1s"></div>`).join('');
+  if(mbInterval)clearInterval(mbInterval);
+  mbInterval=setInterval(()=>{
+    for(let i=0;i<16;i++){
+      const h=Math.random()*36+4;
+      const el=document.getElementById('mb'+i);
+      if(el)el.style.height=h+'px';
     }
-  }
-
-  if(name === 'ambient') drawColorCanvas();
+  },120);
 }
 
-function drawColorCanvas() {
-  const canvas = document.getElementById('colorCanvas');
-  if(!canvas) return;
-  canvas.width = canvas.offsetWidth * window.devicePixelRatio || 326;
-  canvas.height = canvas.offsetHeight * window.devicePixelRatio || 100;
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width, h = canvas.height;
-  const grad = ctx.createLinearGradient(0,0,w,0);
-  grad.addColorStop(0,'#fff');
-  grad.addColorStop(0.17,'#ff0000');
-  grad.addColorStop(0.33,'#ffff00');
-  grad.addColorStop(0.5,'#00ff00');
-  grad.addColorStop(0.67,'#00ffff');
-  grad.addColorStop(0.83,'#0000ff');
-  grad.addColorStop(1,'#ff00ff');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,w,h);
-  const grad2 = ctx.createLinearGradient(0,0,0,h);
-  grad2.addColorStop(0,'rgba(255,255,255,0.9)');
-  grad2.addColorStop(0.5,'rgba(255,255,255,0)');
-  grad2.addColorStop(0.5,'rgba(0,0,0,0)');
-  grad2.addColorStop(1,'rgba(0,0,0,0.85)');
-  ctx.fillStyle = grad2;
-  ctx.fillRect(0,0,w,h);
+// Color canvas
+function initAmb(){
+  const canvas=document.getElementById('colorCanvas');if(!canvas)return;
+  const rect=document.getElementById('pickerArea').getBoundingClientRect();
+  canvas.width=rect.width*window.devicePixelRatio||340;
+  canvas.height=rect.height*window.devicePixelRatio||90;
+  const ctx=canvas.getContext('2d');
+  const w=canvas.width,h=canvas.height;
+  const hg=ctx.createLinearGradient(0,0,w,0);
+  ['#ff0000','#ffff00','#00ff00','#00ffff','#0000ff','#ff00ff','#ff0000'].forEach((c,i)=>hg.addColorStop(i/6,c));
+  ctx.fillStyle=hg;ctx.fillRect(0,0,w,h);
+  const vg=ctx.createLinearGradient(0,0,0,h);
+  vg.addColorStop(0,'rgba(255,255,255,0.85)');vg.addColorStop(0.5,'rgba(255,255,255,0)');
+  vg.addColorStop(0.5,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,0.85)');
+  ctx.fillStyle=vg;ctx.fillRect(0,0,w,h);
+  canvas.addEventListener('click',e=>{
+    const r=canvas.getBoundingClientRect();
+    const x=(e.clientX-r.left)*(canvas.width/r.width);
+    const y=(e.clientY-r.top)*(canvas.height/r.height);
+    const d=ctx.getImageData(x,y,1,1).data;
+    ambR=d[0];ambG=d[1];ambB=d[2];
+    const dot=document.getElementById('pickerDot');
+    dot.style.left=((e.clientX-r.left)/r.width*100)+'%';
+    dot.style.top=((e.clientY-r.top)/r.height*100)+'%';
+    updateAmbColors();
+    toast(`RGB(${ambR},${ambG},${ambB}) 已下发`);
+  });
+  updateAmbColors();
 }
 
-// Swatch click
-document.querySelectorAll('.swatch').forEach(sw => {
-  sw.addEventListener('click', function() {
-    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
-    this.classList.add('selected');
-    const color = this.style.background;
-    updateAmbient(color);
-  });
+// Brightness
+document.getElementById('brightTrack')&&document.getElementById('brightTrack').addEventListener('click',function(e){
+  const r=this.getBoundingClientRect();
+  const pct=Math.round((e.clientX-r.left)/r.width*100);
+  ambBright=Math.max(0,Math.min(100,pct));
+  document.getElementById('brightThumb').style.left=ambBright+'%';
+  document.getElementById('brightPct').textContent=ambBright+'%';
+  toast(`亮度 ${ambBright}% (CMD 0x03 参数3)`);
 });
 
-function updateAmbient(color) {
-  const hero = document.getElementById('ambientHero');
-  const path = hero.querySelector('path[d*="Q90"]');
-  const ellipse = hero.querySelector('ellipse[cx="179"]');
-  if(path) path.setAttribute('stroke', color);
-  const defs = hero.querySelector('defs');
-  if(defs) {
-    const stop = defs.querySelector('stop[stop-color]');
-    if(stop) stop.setAttribute('stop-color', color);
-  }
+// SCENE
+function applyScene(s){
+  const m={comfort:'舒适模式',sport:'运动模式',night:'夜间模式',race:'赛道模式',eco:'节能模式'};
+  document.querySelectorAll('.scene-badge').forEach(b=>b.remove());
+  event&&event.currentTarget&&(()=>{
+    const bd=document.createElement('div');
+    bd.className='scene-badge';bd.textContent='当前';
+  })();
+  toast(`✓ ${m[s]} 已激活 (CMD 0x01 联动下发)`);
 }
 
-// Tab switching for shortcuts
-document.querySelectorAll('.tab-bar .tab').forEach((tab, i) => {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
-
-document.querySelectorAll('.al-tab').forEach(tab => {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.al-tab').forEach(t => t.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
-
-// OTA progress animation
-let otaPct = 75;
-setInterval(() => {
-  if(document.getElementById('screen-ota').classList.contains('active')) {
-    if(otaPct < 100) {
-      otaPct = Math.min(100, otaPct + 0.3);
-      const ring = document.getElementById('otaRing');
-      const pctEl = document.getElementById('otaPct');
-      if(ring && pctEl) {
-        const offset = 376 - (376 * otaPct / 100);
-        ring.style.strokeDashoffset = offset;
-        pctEl.textContent = Math.round(otaPct) + '%';
-      }
-    }
+// Simulate realtime data
+setInterval(()=>{
+  if(document.getElementById('s-home').classList.contains('on')){
+    const spd=Math.floor(Math.random()*8);
+    document.getElementById('rtSpeed').textContent=spd;
   }
-}, 200);
+},3000);
 </script>
 </body>
 </html>
