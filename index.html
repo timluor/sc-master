@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>SC Master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --red: #E8312A;
+    --red-dark: #B52420;
+    --red-glow: rgba(232,49,42,0.25);
+    --bg: #0A0A0A;
+    --bg2: #141414;
+    --bg3: #1C1C1C;
+    --bg4: #242424;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #F0F0F0;
+    --text2: #A0A0A0;
+    --text3: #606060;
+    --green: #3ECF8E;
+    --amber: #F5A623;
+    --font-en: 'Rajdhani', sans-serif;
+    --font-cn: 'Noto Sans SC', sans-serif;
+  }
+  html, body { height: 100%; background: var(--bg); color: var(--text); }
+  body { font-family: var(--font-cn); min-height: 100vh; }
+
+  .app { max-width: 390px; margin: 0 auto; min-height: 100vh; background: var(--bg); position: relative; overflow: hidden; }
+
+  /* NAV */
+  .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 390px; background: rgba(14,14,14,0.95); backdrop-filter: blur(20px); border-top: 0.5px solid var(--border); display: flex; z-index: 100; padding: 8px 0 20px; }
+  .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; padding: 6px 0; }
+  .nav-icon { width: 22px; height: 22px; opacity: 0.4; }
+  .nav-icon.active { opacity: 1; filter: drop-shadow(0 0 4px var(--red)); }
+  .nav-icon svg { width: 22px; height: 22px; }
+  .nav-label { font-size: 10px; color: var(--text3); font-family: var(--font-cn); }
+  .nav-item.active .nav-label { color: var(--red); }
+  .nav-item.active .nav-icon svg path, .nav-item.active .nav-icon svg rect, .nav-item.active .nav-icon svg circle { stroke: var(--red); }
+
+  /* SCREENS */
+  .screen { display: none; padding: 0 0 90px; animation: fadeIn 0.2s ease; }
+  .screen.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* HEADER */
+  .header { padding: 56px 20px 16px; display: flex; justify-content: space-between; align-items: flex-start; }
+  .header-title { font-family: var(--font-en); font-size: 28px; font-weight: 700; letter-spacing: 1px; color: var(--text); }
+  .header-sub { font-size: 11px; color: var(--text3); font-family: var(--font-en); letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; }
+  .header-add { width: 32px; height: 32px; border: 0.5px solid var(--border2); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .header-add svg { width: 16px; height: 16px; stroke: var(--text2); }
+
+  .page-header { padding: 52px 20px 12px; display: flex; align-items: center; gap: 14px; }
+  .back-btn { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .back-btn svg { width: 20px; height: 20px; stroke: var(--text); }
+  .page-title { font-size: 18px; font-weight: 700; color: var(--text); }
+  .page-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  /* CAR CARD */
+  .car-card { margin: 0 16px 20px; background: linear-gradient(135deg, #181818 0%, #111111 100%); border: 0.5px solid var(--border2); border-radius: 16px; padding: 16px; overflow: hidden; position: relative; }
+  .car-card::before { content: ''; position: absolute; top: -40px; right: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(232,49,42,0.06) 0%, transparent 70%); pointer-events: none; }
+  .car-info { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+  .car-name { font-family: var(--font-en); font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; }
+  .car-battery { display: flex; align-items: center; gap: 6px; }
+  .battery-pct { font-family: var(--font-en); font-size: 14px; font-weight: 600; color: var(--green); }
+  .battery-bar { width: 28px; height: 12px; border: 1.5px solid var(--green); border-radius: 2px; position: relative; display: flex; align-items: center; padding: 2px; }
+  .battery-bar::after { content: ''; position: absolute; right: -5px; top: 50%; transform: translateY(-50%); width: 3px; height: 5px; background: var(--green); border-radius: 0 1px 1px 0; }
+  .battery-fill { height: 100%; width: 100%; background: var(--green); border-radius: 1px; }
+  .car-status { display: flex; align-items: center; gap: 5px; margin-bottom: 12px; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
+  .status-text { font-size: 12px; color: var(--green); }
+  .module-ver { font-size: 11px; color: var(--text3); }
+  .car-img-wrap { height: 90px; display: flex; align-items: center; justify-content: center; margin: 4px 0; }
+  .car-svg { width: 220px; height: 80px; }
+  .tesla-badge { font-family: var(--font-en); font-size: 11px; letter-spacing: 4px; color: var(--text3); text-align: center; text-transform: uppercase; margin-top: 4px; }
+
+  /* FEATURE GRID */
+  .feature-grid { margin: 0 16px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .feat-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 14px; padding: 16px; cursor: pointer; position: relative; overflow: hidden; transition: border-color 0.2s; }
+  .feat-card:active { transform: scale(0.97); }
+  .feat-card.purple { border-color: rgba(140,80,220,0.3); }
+  .feat-card.green { border-color: rgba(62,207,142,0.3); }
+  .feat-card.amber { border-color: rgba(245,166,35,0.3); }
+  .feat-card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .feat-card-sub { font-size: 11px; color: var(--text3); line-height: 1.4; }
+  .feat-icon { width: 28px; height: 28px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+  .feat-icon svg { width: 18px; height: 18px; }
+
+  /* DEVICE STATUS */
+  .section-header { padding: 0 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .section-title { font-size: 14px; font-weight: 700; color: var(--text); }
+  .section-more { font-size: 12px; color: var(--text3); display: flex; align-items: center; gap: 2px; }
+  .status-grid { margin: 0 16px; display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 20px; }
+  .stat-item { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 12px; padding: 12px 8px; text-align: center; }
+  .stat-icon { width: 20px; height: 20px; margin: 0 auto 6px; }
+  .stat-icon svg { width: 20px; height: 20px; stroke: var(--text3); }
+  .stat-val { font-size: 13px; font-family: var(--font-en); font-weight: 600; color: var(--text); }
+  .stat-val.green { color: var(--green); }
+  .stat-val.normal { color: var(--red); }
+  .stat-label { font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+  /* SHORTCUT SCREEN */
+  .steering-wrap { margin: 0 16px 16px; background: var(--bg2); border-radius: 16px; overflow: hidden; position: relative; }
+  .steering-img { width: 100%; height: 200px; display: flex; align-items: center; justify-content: center; background: #101010; position: relative; }
+  .sw-svg { width: 240px; height: 180px; }
+  .tab-bar { display: flex; background: var(--bg3); border-bottom: 0.5px solid var(--border); }
+  .tab { flex: 1; padding: 12px 0; text-align: center; font-size: 13px; color: var(--text3); cursor: pointer; position: relative; }
+  .tab.active { color: var(--text); }
+  .tab.active::after { content: ''; position: absolute; bottom: 0; left: 20%; right: 20%; height: 2px; background: var(--red); border-radius: 1px; }
+
+  .shortcut-list { padding: 0 16px; }
+  .shortcut-item { display: flex; align-items: center; padding: 14px 0; border-bottom: 0.5px solid var(--border); cursor: pointer; }
+  .shortcut-item:last-child { border-bottom: none; }
+  .sc-icon-box { width: 36px; height: 36px; background: var(--bg3); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-right: 14px; flex-shrink: 0; }
+  .sc-icon-box svg { width: 18px; height: 18px; stroke: var(--text2); }
+  .sc-name { font-size: 14px; color: var(--text); flex: 1; }
+  .sc-action { font-size: 13px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+  .sc-action svg { width: 14px; height: 14px; stroke: var(--text3); }
+
+  .save-btn { margin: 16px; background: var(--red); border: none; border-radius: 12px; width: calc(100% - 32px); padding: 16px; font-size: 16px; font-weight: 700; color: #fff; font-family: var(--font-cn); cursor: pointer; letter-spacing: 1px; transition: background 0.2s; }
+  .save-btn:active { background: var(--red-dark); transform: scale(0.98); }
+
+  /* OTA SCREEN */
+  .ota-hero { margin: 0 16px 20px; background: var(--bg2); border-radius: 16px; padding: 24px; display: flex; align-items: center; justify-content: center; min-height: 200px; position: relative; overflow: hidden; }
+  .ota-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 80%, rgba(232,49,42,0.07) 0%, transparent 60%); }
+  .progress-ring-wrap { position: relative; width: 140px; height: 140px; }
+  .progress-ring { transform: rotate(-90deg); }
+  .ring-bg { stroke: var(--bg4); fill: none; stroke-width: 8; }
+  .ring-fill { stroke: var(--red); fill: none; stroke-width: 8; stroke-linecap: round; stroke-dasharray: 376; stroke-dashoffset: 94; transition: stroke-dashoffset 0.5s; }
+  .ring-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .ring-pct { font-family: var(--font-en); font-size: 32px; font-weight: 700; color: var(--text); }
+  .ring-label { font-size: 12px; color: var(--text3); margin-top: 2px; }
+
+  .ota-version { text-align: center; margin-bottom: 16px; }
+  .ota-ver-text { font-size: 13px; color: var(--text2); }
+  .ota-ver-num { font-family: var(--font-en); font-size: 15px; font-weight: 600; color: var(--text); }
+
+  .ota-steps { margin: 0 16px; }
+  .ota-step { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
+  .ota-step:last-child { border-bottom: none; }
+  .step-icon { width: 20px; height: 20px; flex-shrink: 0; }
+  .step-dot { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-dot.done { background: var(--green); border-color: var(--green); }
+  .step-dot.active { border-color: var(--red); }
+  .step-dot.done svg { width: 11px; height: 11px; stroke: #fff; stroke-width: 2.5; }
+  .step-dot.active-ring { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--red); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .step-name { font-size: 14px; color: var(--text2); }
+  .step-name.active { color: var(--text); }
+  .ota-note { margin: 16px; padding: 12px 14px; background: rgba(232,49,42,0.07); border: 0.5px solid rgba(232,49,42,0.2); border-radius: 10px; font-size: 12px; color: var(--text3); line-height: 1.6; }
+
+  /* AMBIENT LIGHT */
+  .ambient-hero { margin: 0 16px 16px; height: 170px; border-radius: 16px; overflow: hidden; background: #080810; position: relative; display: flex; align-items: flex-end; }
+  .ambient-glow { position: absolute; inset: 0; }
+  .ambient-overlay { position: relative; width: 100%; padding: 14px; }
+  .al-tabs { display: flex; gap: 16px; margin: 0 16px 14px; }
+  .al-tab { font-size: 13px; color: var(--text3); cursor: pointer; padding-bottom: 6px; position: relative; }
+  .al-tab.active { color: var(--text); }
+  .al-tab.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--red); border-radius: 1px; }
+  .color-swatches { display: flex; gap: 10px; padding: 0 16px 14px; overflow-x: auto; scrollbar-width: none; }
+  .color-swatches::-webkit-scrollbar { display: none; }
+  .swatch { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
+  .swatch.selected { border-color: white; box-shadow: 0 0 0 3px rgba(255,255,255,0.15); }
+  .color-picker-wrap { margin: 0 16px 14px; border-radius: 12px; overflow: hidden; position: relative; height: 100px; }
+  .color-canvas { width: 100%; height: 100%; border-radius: 12px; }
+  .picker-handle { position: absolute; width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 0 1px rgba(0,0,0,0.3); cursor: pointer; transform: translate(-50%,-50%); left: 60%; top: 75%; }
+  .brightness-row { display: flex; align-items: center; gap: 12px; padding: 0 16px; margin-bottom: 8px; }
+  .brightness-label { font-size: 13px; color: var(--text3); width: 28px; }
+  .brightness-bar { flex: 1; height: 4px; background: var(--bg3); border-radius: 2px; position: relative; }
+  .brightness-fill { height: 100%; width: 80%; background: linear-gradient(90deg, #333, #fff); border-radius: 2px; }
+  .brightness-handle { position: absolute; right: 20%; top: 50%; transform: translate(50%,-50%); width: 16px; height: 16px; background: white; border-radius: 50%; box-shadow: 0 1px 4px rgba(0,0,0,0.4); cursor: pointer; }
+  .brightness-pct { font-family: var(--font-en); font-size: 13px; color: var(--text3); width: 36px; text-align: right; }
+
+  /* SCENE MODE */
+  .scene-list { padding: 0 16px; }
+  .scene-card { border-radius: 14px; overflow: hidden; margin-bottom: 10px; position: relative; cursor: pointer; }
+  .scene-bg { width: 100%; height: 86px; object-fit: cover; }
+  .scene-bg-div { width: 100%; height: 86px; }
+  .scene-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,0.65) 0%, transparent 60%); display: flex; align-items: center; padding: 0 14px; }
+  .scene-info { flex: 1; }
+  .scene-name { font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+  .scene-desc { font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 2px; }
+  .scene-badge { position: absolute; top: 10px; right: 10px; background: var(--red); border-radius: 6px; padding: 3px 8px; font-size: 10px; color: #fff; font-weight: 600; }
+  .apply-btn { background: rgba(255,255,255,0.15); backdrop-filter: blur(6px); border: 0.5px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 7px 16px; font-size: 13px; color: #fff; font-family: var(--font-cn); font-weight: 600; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+  .apply-btn:active { background: rgba(255,255,255,0.25); }
+
+  /* SETTINGS */
+  .device-card { margin: 0 16px 16px; background: var(--bg2); border: 0.5px solid var(--border); border-radius: 16px; padding: 16px; display: flex; align-items: center; gap: 14px; }
+  .device-avatar { width: 48px; height: 48px; background: var(--bg3); border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+  .device-avatar svg { width: 26px; height: 26px; stroke: var(--text2); }
+  .device-name { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
+  .device-id { font-size: 11px; color: var(--text3); margin-top: 3px; }
+  .device-ver { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .update-btn { background: rgba(232,49,42,0.12); border: 0.5px solid rgba(232,49,42,0.3); border-radius: 8px; padding: 5px 10px; font-size: 11px; color: var(--red); font-family: var(--font-cn); cursor: pointer; white-space: nowrap; }
+  .edit-icon { width: 16px; height: 16px; stroke: var(--text3); }
+
+  .settings-section { margin: 0 16px 20px; background: var(--bg2); border: 0.5px solid var(--border); border-radius: 16px; overflow: hidden; }
+  .settings-item { display: flex; align-items: center; gap: 12px; padding: 15px 16px; border-bottom: 0.5px solid var(--border); cursor: pointer; transition: background 0.15s; }
+  .settings-item:last-child { border-bottom: none; }
+  .settings-item:active { background: var(--bg3); }
+  .si-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .si-icon svg { width: 16px; height: 16px; }
+  .si-icon.blue { background: rgba(30,100,220,0.15); }
+  .si-icon.blue svg { stroke: #4A90E2; }
+  .si-icon.red { background: rgba(232,49,42,0.12); }
+  .si-icon.red svg { stroke: var(--red); }
+  .si-icon.green { background: rgba(62,207,142,0.12); }
+  .si-icon.green svg { stroke: var(--green); }
+  .si-icon.orange { background: rgba(245,166,35,0.12); }
+  .si-icon.orange svg { stroke: var(--amber); }
+  .si-icon.gray { background: var(--bg3); }
+  .si-icon.gray svg { stroke: var(--text2); }
+  .si-icon.purple { background: rgba(140,80,220,0.12); }
+  .si-icon.purple svg { stroke: #9B59B6; }
+  .si-label { flex: 1; font-size: 14px; color: var(--text); }
+  .si-arrow { width: 14px; height: 14px; stroke: var(--text3); }
+
+  .logout-btn { margin: 0 16px 24px; border: 0.5px solid rgba(232,49,42,0.3); border-radius: 12px; width: calc(100% - 32px); padding: 15px; font-size: 15px; font-weight: 600; color: var(--red); font-family: var(--font-cn); cursor: pointer; background: transparent; letter-spacing: 1px; transition: background 0.2s; }
+  .logout-btn:active { background: rgba(232,49,42,0.08); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HOME SCREEN -->
+  <div class="screen active" id="screen-home">
+    <div class="header">
+      <div>
+        <div class="header-title">SC Master</div>
+        <div class="header-sub">Smart Steering Control System</div>
+      </div>
+      <div class="header-add">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+    </div>
+
+    <!-- Car Card -->
+    <div class="car-card">
+      <div class="car-info">
+        <div class="car-name">Model Y Performance</div>
+        <div class="car-battery">
+          <span class="battery-pct">100%</span>
+          <div class="battery-bar"><div class="battery-fill"></div></div>
+        </div>
+      </div>
+      <div class="car-status">
+        <div class="status-dot"></div>
+        <span class="status-text">已连接</span>
+        <span style="color:var(--text3);font-size:12px;margin-left:10px;">SC Module v2.3.8</span>
+      </div>
+      <div class="car-img-wrap">
+        <svg class="car-svg" viewBox="0 0 220 80" fill="none">
+          <ellipse cx="110" cy="72" rx="95" ry="6" fill="rgba(0,0,0,0.4)"/>
+          <!-- Body -->
+          <path d="M20 55 L30 30 Q50 12 80 10 L140 10 Q170 10 190 30 L200 55 Z" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
+          <!-- Roof -->
+          <path d="M60 30 Q75 12 110 11 Q145 12 162 30" fill="#222" stroke="#2A2A2A" stroke-width="0.5"/>
+          <!-- Windows -->
+          <path d="M68 29 L80 14 Q100 10 115 13 L118 29 Z" fill="#0D1520" opacity="0.9"/>
+          <path d="M120 29 L125 13 Q145 10 160 20 L162 29 Z" fill="#0D1520" opacity="0.9"/>
+          <!-- Window divider -->
+          <line x1="119" y1="13" x2="119" y2="29" stroke="#333" stroke-width="1"/>
+          <!-- Wheels -->
+          <circle cx="58" cy="58" r="14" fill="#111" stroke="#333" stroke-width="1.5"/>
+          <circle cx="58" cy="58" r="8" fill="#1A1A1A" stroke="#444" stroke-width="1"/>
+          <circle cx="58" cy="58" r="3" fill="#555"/>
+          <circle cx="162" cy="58" r="14" fill="#111" stroke="#333" stroke-width="1.5"/>
+          <circle cx="162" cy="58" r="8" fill="#1A1A1A" stroke="#444" stroke-width="1"/>
+          <circle cx="162" cy="58" r="3" fill="#555"/>
+          <!-- Underbody -->
+          <path d="M20 55 L30 60 L75 62 L145 62 L190 60 L200 55" stroke="#2A2A2A" stroke-width="0.5" fill="none"/>
+          <!-- Headlights -->
+          <path d="M192 35 L200 38 L200 48 L194 50" fill="#E8312A" opacity="0.4"/>
+          <path d="M193 35 L200 37" stroke="#E8312A" stroke-width="1.5" opacity="0.8"/>
+          <!-- Taillights -->
+          <path d="M20 38 L27 35 L27 50 L21 48" fill="#E8312A" opacity="0.25"/>
+          <line x1="20" y1="37" x2="28" y2="35" stroke="#E8312A" stroke-width="1" opacity="0.6"/>
+          <!-- Tesla logo -->
+          <text x="110" y="54" text-anchor="middle" font-family="Rajdhani" font-size="8" fill="#555" letter-spacing="4">TESLA</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Feature Grid -->
+    <div class="feature-grid">
+      <div class="feat-card purple" onclick="showScreen('shortcut')">
+        <div class="feat-icon" style="background:rgba(140,80,220,0.15);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="rgba(180,120,255,0.9)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9 9h.01M15 9h.01M9 15h6"/></svg>
+        </div>
+        <div class="feat-card-title">快捷按键</div>
+        <div class="feat-card-sub">自定义按键功能</div>
+      </div>
+      <div class="feat-card green" onclick="showScreen('ota')">
+        <div class="feat-icon" style="background:rgba(62,207,142,0.12);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.8"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        </div>
+        <div class="feat-card-title">OTA升级</div>
+        <div class="feat-card-sub" style="color:var(--green);opacity:0.8;">当前版本 v2.3.8</div>
+      </div>
+      <div class="feat-card" style="border-color:rgba(232,49,42,0.3);" onclick="showScreen('ambient')">
+        <div class="feat-icon" style="background:rgba(232,49,42,0.1);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        </div>
+        <div class="feat-card-title">氛围灯控制</div>
+        <div class="feat-card-sub">多种灯效模式</div>
+      </div>
+      <div class="feat-card amber" onclick="showScreen('scene')">
+        <div class="feat-icon" style="background:rgba(245,166,35,0.12);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <div class="feat-card-title">场景模式</div>
+        <div class="feat-card-sub">多场景自动联动</div>
+      </div>
+    </div>
+
+    <!-- Device Status -->
+    <div class="section-header">
+      <span class="section-title">设备状态</span>
+      <span class="section-more">查看全部 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="9 18 15 12 9 6"/></svg></span>
+    </div>
+    <div class="status-grid">
+      <div class="stat-item">
+        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26C17.81 13.47 19 11.38 19 9a7 7 0 0 0-7-7z"/><line x1="9" y1="21" x2="15" y2="21"/></svg></div>
+        <div class="stat-val green">优秀</div>
+        <div class="stat-label">蓝牙强度</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3v4M8 3v4"/></svg></div>
+        <div class="stat-val">12.6V</div>
+        <div class="stat-label">模块电压</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></div>
+        <div class="stat-val">36°C</div>
+        <div class="stat-label">温度</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="stat-val normal">正常</div>
+        <div class="stat-label">运行状态</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SHORTCUT SCREEN -->
+  <div class="screen" id="screen-shortcut">
+    <div class="page-header">
+      <div class="back-btn" onclick="showScreen('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div>
+        <div class="page-title">快捷按键</div>
+        <div class="page-sub">自定义SC方向盘按键功能</div>
+      </div>
+    </div>
+
+    <div class="steering-wrap">
+      <div class="steering-img">
+        <svg class="sw-svg" viewBox="0 0 240 180" fill="none">
+          <!-- Wheel outer ring -->
+          <circle cx="120" cy="95" r="78" stroke="#2A2A2A" stroke-width="14" fill="none"/>
+          <circle cx="120" cy="95" r="78" stroke="#1A1A1A" stroke-width="12" fill="none"/>
+          <!-- Spokes -->
+          <path d="M60 145 L95 100" stroke="#222" stroke-width="10" stroke-linecap="round"/>
+          <path d="M180 145 L145 100" stroke="#222" stroke-width="10" stroke-linecap="round"/>
+          <path d="M120 17 L120 60" stroke="#222" stroke-width="10" stroke-linecap="round"/>
+          <!-- Hub -->
+          <circle cx="120" cy="95" r="38" fill="#1A1A1A" stroke="#2A2A2A" stroke-width="1"/>
+          <!-- Tesla T logo -->
+          <path d="M108 82 L132 82" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+          <line x1="120" y1="82" x2="120" y2="108" stroke="#555" stroke-width="2" stroke-linecap="round"/>
+          <!-- Left button -->
+          <rect x="28" y="62" width="34" height="28" rx="6" fill="#1E1E1E" stroke="#E8312A" stroke-width="1.5"/>
+          <line x1="40" y1="76" x2="52" y2="76" stroke="#E8312A" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="46" y1="70" x2="46" y2="82" stroke="#E8312A" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Right button -->
+          <rect x="178" y="62" width="34" height="28" rx="6" fill="#1E1E1E" stroke="#E8312A" stroke-width="1.5"/>
+          <circle cx="195" cy="76" r="6" fill="none" stroke="#E8312A" stroke-width="1.5"/>
+          <line x1="190" y1="71" x2="195" y2="76" stroke="#E8312A" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Scroll wheel indicator left -->
+          <rect x="36" y="108" width="18" height="30" rx="9" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
+          <line x1="45" y1="119" x2="45" y2="127" stroke="#444" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- Scroll wheel indicator right -->
+          <rect x="186" y="108" width="18" height="30" rx="9" fill="#1A1A1A" stroke="#333" stroke-width="1"/>
+          <line x1="195" y1="119" x2="195" y2="127" stroke="#444" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="tab-bar">
+        <div class="tab active">单击</div>
+        <div class="tab">双击</div>
+        <div class="tab">长按</div>
+        <div class="tab">滚轮</div>
+      </div>
+    </div>
+
+    <div class="shortcut-list">
+      <div class="shortcut-item">
+        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></div>
+        <span class="sc-name">左侧按键</span>
+        <div class="sc-action">打开前备箱 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+      <div class="shortcut-item">
+        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M3 12h2M19 12h2M12 3v2M12 19v2"/></svg></div>
+        <span class="sc-name">右侧按键</span>
+        <div class="sc-action">360全景影像 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+      <div class="shortcut-item">
+        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="18 15 12 9 6 15"/></svg></div>
+        <span class="sc-name">滚轮上滑</span>
+        <div class="sc-action">音量+ <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+      <div class="shortcut-item">
+        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <span class="sc-name">滚轮下滑</span>
+        <div class="sc-action">音量- <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+      <div class="shortcut-item">
+        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="2"/><circle cx="12" cy="12" r="8"/></svg></div>
+        <span class="sc-name">滚轮按压</span>
+        <div class="sc-action">静音 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+      <div class="shortcut-item">
+        <div class="sc-icon-box"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
+        <span class="sc-name">长按滚轮</span>
+        <div class="sc-action">切换驾驶模式 <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>
+      </div>
+    </div>
+
+    <button class="save-btn">保存配置到设备</button>
+  </div>
+
+  <!-- OTA SCREEN -->
+  <div class="screen" id="screen-ota">
+    <div class="page-header">
+      <div class="back-btn" onclick="showScreen('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div>
+        <div class="page-title">OTA升级</div>
+      </div>
+    </div>
+
+    <div class="ota-hero">
+      <div class="progress-ring-wrap">
+        <svg width="140" height="140" class="progress-ring">
+          <circle class="ring-bg" cx="70" cy="70" r="60"/>
+          <circle class="ring-fill" cx="70" cy="70" r="60" id="otaRing"/>
+        </svg>
+        <div class="ring-text">
+          <div class="ring-pct" id="otaPct">75%</div>
+          <div class="ring-label">正在升级...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ota-version" style="margin:0 0 16px;padding:0 16px;">
+      <span class="ota-ver-text">正在升级到 </span><span class="ota-ver-num">v2.5.3</span>
+    </div>
+
+    <div class="ota-steps">
+      <div class="ota-step">
+        <div class="step-dot done"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span class="step-name">准备升级包</span>
+      </div>
+      <div class="ota-step">
+        <div class="step-dot done"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span class="step-name">验证升级包</span>
+      </div>
+      <div class="ota-step">
+        <div class="step-dot done"><svg viewBox="0 0 24 24" fill="none"><polyline points="20 6 9 17 4 12"/></svg></div>
+        <span class="step-name">传输升级包</span>
+      </div>
+      <div class="ota-step">
+        <div class="step-dot active-ring" style="border-color:var(--red);">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1.2s infinite;"></div>
+        </div>
+        <span class="step-name active">写入固件</span>
+      </div>
+      <div class="ota-step">
+        <div class="step-dot"></div>
+        <span class="step-name">重启设备</span>
+      </div>
+    </div>
+    <div class="ota-note">升级过程中请勿断开连接<br>升级预计需要 2 分钟</div>
+    <style>@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}</style>
+  </div>
+
+  <!-- AMBIENT LIGHT -->
+  <div class="screen" id="screen-ambient">
+    <div class="page-header">
+      <div class="back-btn" onclick="showScreen('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="page-title">氛围灯控制</div>
+    </div>
+
+    <div class="ambient-hero" id="ambientHero">
+      <svg class="ambient-glow" viewBox="0 0 358 170" preserveAspectRatio="xMidYMid slice">
+        <!-- Dark car interior silhouette with ambient glow -->
+        <defs>
+          <radialGradient id="glow1" cx="50%" cy="100%" r="60%">
+            <stop offset="0%" stop-color="#E8312A" stop-opacity="0.5"/>
+            <stop offset="100%" stop-color="#E8312A" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <rect width="358" height="170" fill="#0A080C"/>
+        <!-- Dashboard ambient line -->
+        <path d="M0 120 Q90 108 180 112 Q270 116 358 108" stroke="#E8312A" stroke-width="2" fill="none" opacity="0.6"/>
+        <!-- Glow under dashboard -->
+        <ellipse cx="179" cy="140" rx="160" ry="30" fill="url(#glow1)"/>
+        <!-- Seat outlines -->
+        <path d="M40 170 L40 130 Q60 115 100 118 L120 130 L120 170" fill="#100C10" stroke="#1A1510" stroke-width="1"/>
+        <path d="M238 170 L238 130 Q258 115 298 118 L318 130 L318 170" fill="#100C10" stroke="#1A1510" stroke-width="1"/>
+        <!-- Footwell glow -->
+        <ellipse cx="80" cy="168" rx="35" ry="8" fill="#E8312A" opacity="0.15"/>
+        <ellipse cx="278" cy="168" rx="35" ry="8" fill="#E8312A" opacity="0.15"/>
+      </svg>
+      <div class="ambient-overlay"></div>
+    </div>
+
+    <div class="al-tabs">
+      <div class="al-tab active">颜色</div>
+      <div class="al-tab">模式</div>
+      <div class="al-tab">音乐律动</div>
+      <div class="al-tab">更多</div>
+    </div>
+
+    <div class="color-swatches">
+      <div class="swatch selected" style="background:#E8312A;"></div>
+      <div class="swatch" style="background:#F5842A;"></div>
+      <div class="swatch" style="background:#F5C923;"></div>
+      <div class="swatch" style="background:#3ECF8E;"></div>
+      <div class="swatch" style="background:#27AEF5;"></div>
+      <div class="swatch" style="background:#4A6CF7;"></div>
+      <div class="swatch" style="background:#9B59B6;"></div>
+      <div class="swatch" style="background:#F472B6;"></div>
+      <div class="swatch" style="background:#FFFFFF;"></div>
+    </div>
+
+    <div class="color-picker-wrap">
+      <canvas class="color-canvas" id="colorCanvas"></canvas>
+      <div class="picker-handle" id="pickerHandle"></div>
+    </div>
+
+    <div class="brightness-row">
+      <span class="brightness-label">亮度</span>
+      <div class="brightness-bar">
+        <div class="brightness-fill"></div>
+        <div class="brightness-handle"></div>
+      </div>
+      <span class="brightness-pct">80%</span>
+    </div>
+  </div>
+
+  <!-- SCENE MODE -->
+  <div class="screen" id="screen-scene">
+    <div class="page-header">
+      <div class="back-btn" onclick="showScreen('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="page-title">场景模式</div>
+      <div style="margin-left:auto;width:28px;height:28px;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text2)" stroke-width="2" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+    </div>
+    <div class="scene-list">
+      <div class="scene-card">
+        <div class="scene-bg-div" style="background:linear-gradient(135deg,#1A2A1A 0%,#2A4A2A 40%,#3A6A3A 100%);"></div>
+        <div class="scene-overlay" style="background:linear-gradient(90deg,rgba(10,30,10,0.8) 0%,transparent 65%);">
+          <div class="scene-info">
+            <div class="scene-name">舒适模式</div>
+            <div class="scene-desc">适合日常驾驶，平衡舒适与性能</div>
+          </div>
+          <button class="apply-btn">应用</button>
+        </div>
+        <div class="scene-badge">当前使用</div>
+      </div>
+      <div class="scene-card">
+        <div class="scene-bg-div" style="background:linear-gradient(135deg,#2A1A0A 0%,#5A2A10 40%,#8A3A18 100%);"></div>
+        <div class="scene-overlay" style="background:linear-gradient(90deg,rgba(20,8,2,0.8) 0%,transparent 65%);">
+          <div class="scene-info">
+            <div class="scene-name">运动模式</div>
+            <div class="scene-desc">提升驾驶响应，增强运动体验</div>
+          </div>
+          <button class="apply-btn">应用</button>
+        </div>
+      </div>
+      <div class="scene-card">
+        <div class="scene-bg-div" style="background:linear-gradient(135deg,#0A0A1A 0%,#0A1A3A 40%,#1A2A5A 100%);"></div>
+        <div class="scene-overlay" style="background:linear-gradient(90deg,rgba(4,4,14,0.8) 0%,transparent 65%);">
+          <div class="scene-info">
+            <div class="scene-name">夜间模式</div>
+            <div class="scene-desc">柔和灯光，减少夜间驾驶疲劳</div>
+          </div>
+          <button class="apply-btn">应用</button>
+        </div>
+      </div>
+      <div class="scene-card">
+        <div class="scene-bg-div" style="background:linear-gradient(135deg,#1A0A0A 0%,#3A0A0A 40%,#6A1010 100%);"></div>
+        <div class="scene-overlay" style="background:linear-gradient(90deg,rgba(14,2,2,0.8) 0%,transparent 65%);">
+          <div class="scene-info">
+            <div class="scene-name">赛道模式</div>
+            <div class="scene-desc">极致性能输出，赛道专属设置</div>
+          </div>
+          <button class="apply-btn">应用</button>
+        </div>
+      </div>
+      <div class="scene-card">
+        <div class="scene-bg-div" style="background:linear-gradient(135deg,#0A1A0A 0%,#0A2A1A 40%,#0A3A2A 100%);"></div>
+        <div class="scene-overlay" style="background:linear-gradient(90deg,rgba(2,10,6,0.8) 0%,transparent 65%);">
+          <div class="scene-info">
+            <div class="scene-name">节能模式</div>
+            <div class="scene-desc">优化能耗，提升续航里程</div>
+          </div>
+          <button class="apply-btn">应用</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="screen" id="screen-settings">
+    <div class="page-header">
+      <div></div>
+      <div class="page-title">设置</div>
+    </div>
+
+    <div class="device-card">
+      <div class="device-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div style="flex:1;">
+        <div class="device-name">SC Module
+          <svg class="edit-icon" viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div class="device-id">设备ID: SCM202404010001</div>
+        <div class="device-ver">固件版本: v2.3.8</div>
+      </div>
+      <button class="update-btn">检查更新</button>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-item">
+        <div class="si-icon blue"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <span class="si-label">设备信息</span>
+        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="settings-item">
+        <div class="si-icon red"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.38"/></svg></div>
+        <span class="si-label">按键自定义备份与恢复</span>
+        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="settings-item">
+        <div class="si-icon green"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
+        <span class="si-label">分享我的配置</span>
+        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="settings-item">
+        <div class="si-icon orange"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
+        <span class="si-label">固件更新设置</span>
+        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-item">
+        <div class="si-icon gray"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <span class="si-label">使用帮助</span>
+        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+      <div class="settings-item">
+        <div class="si-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <span class="si-label">关于我们</span>
+        <svg class="si-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+
+    <button class="logout-btn">退出登录</button>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="showScreen('home')">
+      <div class="nav-icon active">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor"/><polyline points="9 22 9 12 15 12 15 22" stroke="currentColor"/></svg>
+      </div>
+      <span class="nav-label" style="color:var(--red);">首页</span>
+    </div>
+    <div class="nav-item" id="nav-control" onclick="showScreen('shortcut')">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="1" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="23"/></svg>
+      </div>
+      <span class="nav-label">控制</span>
+    </div>
+    <div class="nav-item" id="nav-scene" onclick="showScreen('scene')">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </div>
+      <span class="nav-label">场景</span>
+    </div>
+    <div class="nav-item" id="nav-settings" onclick="showScreen('settings')">
+      <div class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--text3)" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </div>
+      <span class="nav-label">设置</span>
+    </div>
+  </nav>
+</div>
+
+<script>
+const screens = ['home','shortcut','ota','ambient','scene','settings'];
+const navMap = {home:'nav-home',shortcut:'nav-control',ota:'nav-control',ambient:'nav-control',scene:'nav-scene',settings:'nav-settings'};
+
+function showScreen(name) {
+  screens.forEach(s => {
+    const el = document.getElementById('screen-'+s);
+    if(el) el.classList.remove('active');
+  });
+  const el = document.getElementById('screen-'+name);
+  if(el) el.classList.add('active');
+
+  ['nav-home','nav-control','nav-scene','nav-settings'].forEach(id => {
+    const nav = document.getElementById(id);
+    if(!nav) return;
+    const icon = nav.querySelector('.nav-icon');
+    const label = nav.querySelector('.nav-label');
+    icon.classList.remove('active');
+    label.style.color = 'var(--text3)';
+    const svgs = icon.querySelectorAll('path,rect,circle,polyline,line,polygon');
+    svgs.forEach(el => { el.removeAttribute('stroke'); el.setAttribute('stroke','var(--text3)'); });
+  });
+
+  const activeNav = navMap[name];
+  if(activeNav) {
+    const nav = document.getElementById(activeNav);
+    if(nav) {
+      const icon = nav.querySelector('.nav-icon');
+      const label = nav.querySelector('.nav-label');
+      icon.classList.add('active');
+      label.style.color = 'var(--red)';
+      const svgs = icon.querySelectorAll('path,rect,circle,polyline,line,polygon');
+      svgs.forEach(el => { el.removeAttribute('stroke'); el.setAttribute('stroke','var(--red)'); });
+    }
+  }
+
+  if(name === 'ambient') drawColorCanvas();
+}
+
+function drawColorCanvas() {
+  const canvas = document.getElementById('colorCanvas');
+  if(!canvas) return;
+  canvas.width = canvas.offsetWidth * window.devicePixelRatio || 326;
+  canvas.height = canvas.offsetHeight * window.devicePixelRatio || 100;
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width, h = canvas.height;
+  const grad = ctx.createLinearGradient(0,0,w,0);
+  grad.addColorStop(0,'#fff');
+  grad.addColorStop(0.17,'#ff0000');
+  grad.addColorStop(0.33,'#ffff00');
+  grad.addColorStop(0.5,'#00ff00');
+  grad.addColorStop(0.67,'#00ffff');
+  grad.addColorStop(0.83,'#0000ff');
+  grad.addColorStop(1,'#ff00ff');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,w,h);
+  const grad2 = ctx.createLinearGradient(0,0,0,h);
+  grad2.addColorStop(0,'rgba(255,255,255,0.9)');
+  grad2.addColorStop(0.5,'rgba(255,255,255,0)');
+  grad2.addColorStop(0.5,'rgba(0,0,0,0)');
+  grad2.addColorStop(1,'rgba(0,0,0,0.85)');
+  ctx.fillStyle = grad2;
+  ctx.fillRect(0,0,w,h);
+}
+
+// Swatch click
+document.querySelectorAll('.swatch').forEach(sw => {
+  sw.addEventListener('click', function() {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('selected'));
+    this.classList.add('selected');
+    const color = this.style.background;
+    updateAmbient(color);
+  });
+});
+
+function updateAmbient(color) {
+  const hero = document.getElementById('ambientHero');
+  const path = hero.querySelector('path[d*="Q90"]');
+  const ellipse = hero.querySelector('ellipse[cx="179"]');
+  if(path) path.setAttribute('stroke', color);
+  const defs = hero.querySelector('defs');
+  if(defs) {
+    const stop = defs.querySelector('stop[stop-color]');
+    if(stop) stop.setAttribute('stop-color', color);
+  }
+}
+
+// Tab switching for shortcuts
+document.querySelectorAll('.tab-bar .tab').forEach((tab, i) => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.tab-bar .tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+document.querySelectorAll('.al-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.al-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// OTA progress animation
+let otaPct = 75;
+setInterval(() => {
+  if(document.getElementById('screen-ota').classList.contains('active')) {
+    if(otaPct < 100) {
+      otaPct = Math.min(100, otaPct + 0.3);
+      const ring = document.getElementById('otaRing');
+      const pctEl = document.getElementById('otaPct');
+      if(ring && pctEl) {
+        const offset = 376 - (376 * otaPct / 100);
+        ring.style.strokeDashoffset = offset;
+        pctEl.textContent = Math.round(otaPct) + '%';
+      }
+    }
+  }
+}, 200);
+</script>
+</body>
+</html>
