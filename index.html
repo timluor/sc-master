@@ -299,80 +299,91 @@ body{font-family:var(--cjk);-webkit-font-smoothing:antialiased}
       </div>
     </div>
 
-    <!-- Tesla Model Y SVG -->
-    <div class="car-svg-wrap">
-      <svg width="320" height="100" viewBox="0 0 320 100" fill="none">
-        <defs>
-          <radialGradient id="bodyShadow" cx="50%" cy="100%" r="50%">
-            <stop offset="0%" stop-color="rgba(232,49,42,0.08)"/>
-            <stop offset="100%" stop-color="transparent"/>
-          </radialGradient>
-          <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#2A2A30"/>
-            <stop offset="100%" stop-color="#18181C"/>
-          </linearGradient>
-          <linearGradient id="roofGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#323238"/>
-            <stop offset="100%" stop-color="#1E1E24"/>
-          </linearGradient>
-        </defs>
-        <!-- Ground shadow -->
-        <ellipse cx="160" cy="94" rx="140" ry="6" fill="rgba(0,0,0,0.45)"/>
-        <!-- Body main -->
-        <path d="M22 68 L30 38 Q40 16 72 12 L248 12 Q278 14 294 38 L302 68 Z" fill="url(#bodyGrad)" stroke="#333" stroke-width="0.8"/>
-        <!-- Roof panel -->
-        <path d="M78 36 Q92 13 130 11 L190 11 Q225 12 242 36 Z" fill="url(#roofGrad)" stroke="#2A2A2A" stroke-width="0.5"/>
-        <!-- A-pillar left -->
-        <path d="M78 36 L92 56" stroke="#252528" stroke-width="3" stroke-linecap="round"/>
-        <!-- A-pillar right -->
-        <path d="M242 36 L228 56" stroke="#252528" stroke-width="3" stroke-linecap="round"/>
-        <!-- B-pillar -->
-        <path d="M160 12 L160 56" stroke="#1C1C20" stroke-width="3"/>
-        <!-- Window left -->
-        <path d="M86 35 L100 14 Q118 10 148 11 L155 35 Z" fill="#0C1220" opacity="0.95"/>
-        <!-- Window right -->
-        <path d="M174 35 L168 11 Q200 10 222 20 L234 35 Z" fill="#0C1220" opacity="0.95"/>
-        <!-- Window highlight left -->
-        <path d="M90 30 L102 15 Q115 11 135 12 L138 18 Q122 17 108 22 Z" fill="rgba(100,140,200,0.08)"/>
-        <!-- Door lines -->
-        <line x1="84" y1="42" x2="84" y2="68" stroke="#222" stroke-width="0.7"/>
-        <line x1="160" y1="42" x2="160" y2="68" stroke="#222" stroke-width="0.7"/>
-        <line x1="236" y1="42" x2="236" y2="68" stroke="#222" stroke-width="0.7"/>
-        <!-- Underside -->
-        <path d="M22 68 L28 72 L292 72 L302 68" stroke="#1A1A1E" stroke-width="0.5" fill="none"/>
-        <!-- Front bumper -->
-        <path d="M295 40 L305 52 L305 66 L297 70" fill="#1C1C20" stroke="#2A2A2A" stroke-width="0.5"/>
-        <!-- Rear bumper -->
-        <path d="M25 40 L15 52 L15 66 L23 70" fill="#1C1C20" stroke="#2A2A2A" stroke-width="0.5"/>
-        <!-- Headlight right (DRL) -->
-        <path d="M292 38 L306 45 L306 50 L294 52" fill="none" stroke="#E8312A" stroke-width="1.5" opacity="0.7"/>
-        <line x1="292" y1="38" x2="308" y2="43" stroke="#E8312A" stroke-width="1" opacity="0.5"/>
-        <!-- Taillight left (LED) -->
-        <path d="M22 38 L14 44 L14 52 L22 54" fill="none" stroke="#E8312A" stroke-width="1.5" opacity="0.5"/>
-        <!-- Front frunk line -->
-        <path d="M285 34 Q288 28 298 32" stroke="#2A2A2A" stroke-width="0.8" fill="none"/>
-        <!-- Wheel left front -->
-        <circle cx="78" cy="78" r="18" fill="#111114" stroke="#2E2E34" stroke-width="2"/>
-        <circle cx="78" cy="78" r="11" fill="#18181C" stroke="#3A3A42" stroke-width="1"/>
-        <circle cx="78" cy="78" r="5" fill="#262630"/>
-        <!-- Wheel spokes left -->
-        <line x1="78" y1="67" x2="78" y2="89" stroke="#3A3A44" stroke-width="1.5"/>
-        <line x1="67" y1="78" x2="89" y2="78" stroke="#3A3A44" stroke-width="1.5"/>
-        <line x1="70" y1="70" x2="86" y2="86" stroke="#3A3A44" stroke-width="1"/>
-        <line x1="70" y1="86" x2="86" y2="70" stroke="#3A3A44" stroke-width="1"/>
-        <!-- Wheel right rear -->
-        <circle cx="242" cy="78" r="18" fill="#111114" stroke="#2E2E34" stroke-width="2"/>
-        <circle cx="242" cy="78" r="11" fill="#18181C" stroke="#3A3A42" stroke-width="1"/>
-        <circle cx="242" cy="78" r="5" fill="#262630"/>
-        <line x1="242" y1="67" x2="242" y2="89" stroke="#3A3A44" stroke-width="1.5"/>
-        <line x1="231" y1="78" x2="253" y2="78" stroke="#3A3A44" stroke-width="1.5"/>
-        <line x1="234" y1="70" x2="250" y2="86" stroke="#3A3A44" stroke-width="1"/>
-        <line x1="234" y1="86" x2="250" y2="70" stroke="#3A3A44" stroke-width="1"/>
-        <!-- Body glow -->
-        <rect x="22" y="12" width="280" height="60" rx="6" fill="url(#bodyShadow)" opacity="0.5"/>
-        <!-- Tesla wordmark -->
-        <text x="160" y="65" text-anchor="middle" font-family="Rajdhani" font-size="9" fill="#3A3A44" letter-spacing="6">TESLA</text>
-      </svg>
+    <!-- Car Photo / SVG Zone -->
+    <div class="car-svg-wrap" id="carPhotoZone" onclick="triggerCarUpload()" style="cursor:pointer;position:relative;">
+
+      <!-- Hidden file input -->
+      <input type="file" id="carFileInput" accept="image/*" style="display:none" onchange="handleCarPhoto(event)">
+
+      <!-- Default SVG (shown when no photo) -->
+      <div id="carSvgDefault">
+        <svg width="320" height="100" viewBox="0 0 320 100" fill="none">
+          <defs>
+            <radialGradient id="bodyShadow" cx="50%" cy="100%" r="50%">
+              <stop offset="0%" stop-color="rgba(232,49,42,0.08)"/>
+              <stop offset="100%" stop-color="transparent"/>
+            </radialGradient>
+            <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#2A2A30"/>
+              <stop offset="100%" stop-color="#18181C"/>
+            </linearGradient>
+            <linearGradient id="roofGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#323238"/>
+              <stop offset="100%" stop-color="#1E1E24"/>
+            </linearGradient>
+          </defs>
+          <ellipse cx="160" cy="94" rx="140" ry="6" fill="rgba(0,0,0,0.45)"/>
+          <path d="M22 68 L30 38 Q40 16 72 12 L248 12 Q278 14 294 38 L302 68 Z" fill="url(#bodyGrad)" stroke="#333" stroke-width="0.8"/>
+          <path d="M78 36 Q92 13 130 11 L190 11 Q225 12 242 36 Z" fill="url(#roofGrad)" stroke="#2A2A2A" stroke-width="0.5"/>
+          <path d="M78 36 L92 56" stroke="#252528" stroke-width="3" stroke-linecap="round"/>
+          <path d="M242 36 L228 56" stroke="#252528" stroke-width="3" stroke-linecap="round"/>
+          <path d="M160 12 L160 56" stroke="#1C1C20" stroke-width="3"/>
+          <path d="M86 35 L100 14 Q118 10 148 11 L155 35 Z" fill="#0C1220" opacity="0.95"/>
+          <path d="M174 35 L168 11 Q200 10 222 20 L234 35 Z" fill="#0C1220" opacity="0.95"/>
+          <path d="M90 30 L102 15 Q115 11 135 12 L138 18 Q122 17 108 22 Z" fill="rgba(100,140,200,0.08)"/>
+          <line x1="84" y1="42" x2="84" y2="68" stroke="#222" stroke-width="0.7"/>
+          <line x1="160" y1="42" x2="160" y2="68" stroke="#222" stroke-width="0.7"/>
+          <line x1="236" y1="42" x2="236" y2="68" stroke="#222" stroke-width="0.7"/>
+          <path d="M22 68 L28 72 L292 72 L302 68" stroke="#1A1A1E" stroke-width="0.5" fill="none"/>
+          <path d="M295 40 L305 52 L305 66 L297 70" fill="#1C1C20" stroke="#2A2A2A" stroke-width="0.5"/>
+          <path d="M25 40 L15 52 L15 66 L23 70" fill="#1C1C20" stroke="#2A2A2A" stroke-width="0.5"/>
+          <path d="M292 38 L306 45 L306 50 L294 52" fill="none" stroke="#E8312A" stroke-width="1.5" opacity="0.7"/>
+          <line x1="292" y1="38" x2="308" y2="43" stroke="#E8312A" stroke-width="1" opacity="0.5"/>
+          <path d="M22 38 L14 44 L14 52 L22 54" fill="none" stroke="#E8312A" stroke-width="1.5" opacity="0.5"/>
+          <path d="M285 34 Q288 28 298 32" stroke="#2A2A2A" stroke-width="0.8" fill="none"/>
+          <circle cx="78" cy="78" r="18" fill="#111114" stroke="#2E2E34" stroke-width="2"/>
+          <circle cx="78" cy="78" r="11" fill="#18181C" stroke="#3A3A42" stroke-width="1"/>
+          <circle cx="78" cy="78" r="5" fill="#262630"/>
+          <line x1="78" y1="67" x2="78" y2="89" stroke="#3A3A44" stroke-width="1.5"/>
+          <line x1="67" y1="78" x2="89" y2="78" stroke="#3A3A44" stroke-width="1.5"/>
+          <line x1="70" y1="70" x2="86" y2="86" stroke="#3A3A44" stroke-width="1"/>
+          <line x1="70" y1="86" x2="86" y2="70" stroke="#3A3A44" stroke-width="1"/>
+          <circle cx="242" cy="78" r="18" fill="#111114" stroke="#2E2E34" stroke-width="2"/>
+          <circle cx="242" cy="78" r="11" fill="#18181C" stroke="#3A3A42" stroke-width="1"/>
+          <circle cx="242" cy="78" r="5" fill="#262630"/>
+          <line x1="242" y1="67" x2="242" y2="89" stroke="#3A3A44" stroke-width="1.5"/>
+          <line x1="231" y1="78" x2="253" y2="78" stroke="#3A3A44" stroke-width="1.5"/>
+          <line x1="234" y1="70" x2="250" y2="86" stroke="#3A3A44" stroke-width="1"/>
+          <line x1="234" y1="86" x2="250" y2="70" stroke="#3A3A44" stroke-width="1"/>
+          <rect x="22" y="12" width="280" height="60" rx="6" fill="url(#bodyShadow)" opacity="0.5"/>
+          <text x="160" y="65" text-anchor="middle" font-family="Rajdhani" font-size="9" fill="#3A3A44" letter-spacing="6">TESLA</text>
+        </svg>
+        <!-- Upload hint overlay on SVG -->
+        <div style="position:absolute;bottom:6px;right:12px;display:flex;align-items:center;gap:4px;background:rgba(20,20,24,0.75);backdrop-filter:blur(6px);border:0.5px solid rgba(255,255,255,0.12);border-radius:14px;padding:4px 9px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span style="font-size:10px;color:rgba(255,255,255,0.45);font-family:var(--cjk);">上传实拍照</span>
+        </div>
+      </div>
+
+      <!-- Real photo (hidden until uploaded) -->
+      <div id="carPhotoView" style="display:none;width:100%;position:relative;">
+        <img id="carPhotoImg" src="" alt="车辆实拍"
+          style="width:100%;height:130px;object-fit:cover;display:block;">
+        <!-- Gradient overlays for blending with card -->
+        <div style="position:absolute;inset:0;background:linear-gradient(to bottom,rgba(19,19,22,0.35) 0%,transparent 30%,transparent 70%,rgba(19,19,22,0.55) 100%);pointer-events:none;"></div>
+        <!-- Action bar -->
+        <div style="position:absolute;bottom:8px;right:10px;display:flex;gap:6px;">
+          <div onclick="triggerCarUpload(event)" style="display:flex;align-items:center;gap:4px;background:rgba(20,20,24,0.82);backdrop-filter:blur(8px);border:0.5px solid rgba(255,255,255,0.14);border-radius:14px;padding:5px 10px;cursor:pointer;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span style="font-size:10px;color:rgba(255,255,255,0.7);font-family:var(--cjk);">更换</span>
+          </div>
+          <div onclick="removeCarPhoto(event)" style="display:flex;align-items:center;gap:4px;background:rgba(232,49,42,0.18);backdrop-filter:blur(8px);border:0.5px solid rgba(232,49,42,0.35);border-radius:14px;padding:5px 10px;cursor:pointer;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="rgba(232,49,42,0.9)" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+            <span style="font-size:10px;color:rgba(232,49,42,0.9);font-family:var(--cjk);">删除</span>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Realtime data row -->
@@ -1235,6 +1246,80 @@ setInterval(()=>{
     document.getElementById('rtSpeed').textContent=spd;
   }
 },3000);
+
+// ── CAR PHOTO UPLOAD ──
+function triggerCarUpload(e){
+  if(e){e.stopPropagation();}
+  document.getElementById('carFileInput').click();
+}
+
+function handleCarPhoto(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  if(file.size>4*1024*1024){toast('图片过大，请选择 4MB 以内的照片');e.target.value='';return;}
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const dataUrl=ev.target.result;
+    applyCarPhoto(dataUrl);
+    try{localStorage.setItem('sc_car_photo',dataUrl);toast('✓ 实拍照已保存');}
+    catch(err){toast('照片已显示（存储空间不足，刷新后恢复默认）');}
+  };
+  reader.readAsDataURL(file);
+  e.target.value='';
+}
+
+function applyCarPhoto(dataUrl){
+  document.getElementById('carPhotoImg').src=dataUrl;
+  document.getElementById('carSvgDefault').style.display='none';
+  document.getElementById('carPhotoView').style.display='block';
+  document.getElementById('carPhotoZone').style.cursor='default';
+}
+
+function removeCarPhoto(e){
+  if(e)e.stopPropagation();
+  showConfirmSheet('删除实拍照','确认删除后将恢复默认车辆插图','删除',()=>{
+    document.getElementById('carPhotoImg').src='';
+    document.getElementById('carSvgDefault').style.display='';
+    document.getElementById('carPhotoView').style.display='none';
+    document.getElementById('carPhotoZone').style.cursor='pointer';
+    try{localStorage.removeItem('sc_car_photo');}catch(e){}
+    toast('已恢复默认插图');
+  });
+}
+
+(function restoreCarPhoto(){
+  try{const saved=localStorage.getItem('sc_car_photo');if(saved){applyCarPhoto(saved);}}catch(e){}
+})();
+
+// ── CONFIRM BOTTOM SHEET ──
+(function buildSheet(){
+  const sheet=document.createElement('div');
+  sheet.id='confirmSheet';
+  sheet.style.cssText='position:fixed;inset:0;z-index:500;display:none;';
+  sheet.innerHTML=`
+    <div id="sheetMask" style="position:absolute;inset:0;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px)"></div>
+    <div id="sheetBox" style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:390px;background:#1C1C20;border-radius:20px 20px 0 0;padding:20px 18px calc(env(safe-area-inset-bottom,0px) + 20px);">
+      <div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:0 auto 18px;"></div>
+      <div id="sheetTitle" style="font-size:16px;font-weight:700;color:#F2F2F4;margin-bottom:6px;"></div>
+      <div id="sheetDesc" style="font-size:13px;color:#55555F;margin-bottom:22px;line-height:1.6;"></div>
+      <button id="sheetConfirm" style="width:100%;padding:14px;border:none;border-radius:12px;background:#E8312A;font-size:15px;font-weight:700;color:#fff;font-family:var(--cjk);cursor:pointer;margin-bottom:10px;letter-spacing:1px;"></button>
+      <button id="sheetCancel" onclick="closeSheet()" style="width:100%;padding:13px;border:0.5px solid rgba(255,255,255,0.1);border-radius:12px;background:transparent;font-size:15px;color:#9A9AA8;font-family:var(--cjk);cursor:pointer;">取消</button>
+    </div>`;
+  document.body.appendChild(sheet);
+  document.getElementById('sheetMask').onclick=closeSheet;
+})();
+
+let _sheetCb=null;
+function showConfirmSheet(title,desc,btnLabel,cb){
+  _sheetCb=cb;
+  document.getElementById('sheetTitle').textContent=title;
+  document.getElementById('sheetDesc').textContent=desc;
+  const btn=document.getElementById('sheetConfirm');
+  btn.textContent=btnLabel;
+  btn.onclick=()=>{closeSheet();_sheetCb&&_sheetCb();};
+  document.getElementById('confirmSheet').style.display='block';
+}
+function closeSheet(){document.getElementById('confirmSheet').style.display='none';}
 </script>
 </body>
 </html>
